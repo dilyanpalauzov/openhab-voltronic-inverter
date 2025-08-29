@@ -35,9 +35,6 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.automation.java223light.common.Java223Constants;
 import org.openhab.automation.java223light.common.Java223Exception;
-import org.openhab.automation.java223light.internal.codegeneration.DependencyGenerator;
-import org.openhab.automation.java223light.internal.codegeneration.SourceGenerator;
-import org.openhab.automation.java223light.internal.codegeneration.SourceWriter;
 import org.openhab.automation.java223light.internal.strategy.Java223Strategy;
 import org.openhab.automation.java223light.internal.strategy.ScriptWrappingStrategy;
 import org.openhab.core.automation.RuleManager;
@@ -93,9 +90,6 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory
 
     private final WatchService watchService;
 
-    private final SourceGenerator sourceGenerator;
-    private final SourceWriter classWriter;
-    private final DependencyGenerator dependencyGenerator;
     private Integer writeGuardTime;
 
     private static final Set<ThingStatus> INITIALIZED = Set.of(ThingStatus.ONLINE, ThingStatus.OFFLINE,
@@ -139,25 +133,6 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory
         scriptWrappingStrategy = new ScriptWrappingStrategy();
         compiledScriptCache = new Java223CompiledScriptCache(scriptCacheSize);
 
-        try {
-            copyHelperLibJar();
-
-            dependencyGenerator = new DependencyGenerator(LIB_DIR, additionalBundlesConfig, additionalClassesConfig,
-                    bundleContext);
-            classWriter = new SourceWriter(LIB_DIR);
-            this.sourceGenerator = new SourceGenerator(classWriter, dependencyGenerator, itemRegistry, thingRegistry,
-                    bundleContext);
-            sourceGenerator.generateThings(startupGuardTime);
-            sourceGenerator.generateActions(startupGuardTime);
-            sourceGenerator.generateItems(startupGuardTime);
-            sourceGenerator.generateJava223Script();
-            dependencyGenerator.createCoreDependencies();
-            // When a lib is removed, SourceWriter should now because it may have to regenerate it
-            watchService.registerListener(classWriter, LIB_DIR);
-        } catch (IOException e) {
-            throw new Java223Exception("Cannot create helper library / class files in lib directory", e);
-        }
-
         this.watchService = watchService;
         // first building of internal in memory lib representation
         java223Strategy.scanLibDirectory();
@@ -167,43 +142,6 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory
         watchService.registerListener(compiledScriptCache, LIB_DIR);
 
         logger.info("Bundle activated");
-    }
-
-    private void copyHelperLibJar() throws Java223Exception, IOException {
-        // get old file :
-        Path dest = LIB_DIR.resolve("helper-lib.jar");
-        byte[] oldHelperLibAsByteArray = new byte[0];
-        if (dest.toFile().exists()) {
-            oldHelperLibAsByteArray = Files.readAllBytes(dest);
-        }
-
-        // get new file :
-        byte[] newHelperLibAsByteArray;
-        try (InputStream source = getClass().getResourceAsStream("/helper-lib.jar")) {
-            if (source != null) {
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                byte[] buffer = new byte[1024]; // Buffer size
-                int bytesRead;
-                while ((bytesRead = source.read(buffer)) != -1) {
-                    byteArrayOutputStream.write(buffer, 0, bytesRead);
-                }
-                newHelperLibAsByteArray = byteArrayOutputStream.toByteArray();
-            } else {
-                throw new Java223Exception("Cannot read helper lib in java223light. Should not happened");
-            }
-        } catch (IOException e) {
-            throw new Java223Exception("Cannot read helper file in classpath", e);
-
-        }
-
-        // compare and write only if different
-        if (!Arrays.equals(oldHelperLibAsByteArray, newHelperLibAsByteArray)) {
-            try (FileOutputStream fileOutputStream = new FileOutputStream(dest.toFile())) {
-                fileOutputStream.write(newHelperLibAsByteArray);
-            } catch (IOException e) {
-                throw new Java223Exception("Cannot write helper file", e);
-            }
-        }
     }
 
     @Modified
@@ -221,15 +159,12 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory
         compiledScriptCache.setCacheSize(scriptCacheSize);
         this.writeGuardTime = stabilityGenerationWaitTime;
         java223Strategy.setAllowInstanceReuse(allowInstanceReuse);
-        dependencyGenerator.setAdditionalConfig(additionalBundlesConfig, additionalClassesConfig);
-        dependencyGenerator.createCoreDependencies();
         logger.debug("java223 configuration update received ({})", properties);
     }
 
     @Deactivate
     public void deactivate() {
         watchService.unregisterListener(java223Strategy);
-        watchService.unregisterListener(classWriter);
         watchService.unregisterListener(compiledScriptCache);
     }
 
@@ -288,28 +223,9 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory
 
     @Override
     public Set<String> getSubscribedEventTypes() {
-        return EVENTS;
     }
 
     @Override
     public void receive(Event event) {
-        String eventType = event.getType();
-
-        if (ACTION_EVENTS.contains(eventType)) {
-            ThingStatusInfoChangedEvent eventStatusInfoChange = (ThingStatusInfoChangedEvent) event;
-            if ((ThingStatus.INITIALIZING.equals(eventStatusInfoChange.getOldStatusInfo().getStatus())
-                    && INITIALIZED.contains(eventStatusInfoChange.getStatusInfo().getStatus()))
-                    || (ThingStatus.UNINITIALIZED.equals(eventStatusInfoChange.getStatusInfo().getStatus())
-                            && INITIALIZED.contains(eventStatusInfoChange.getOldStatusInfo().getStatus()))) {
-                sourceGenerator.generateActions(writeGuardTime);
-            }
-        } else if (ITEM_EVENTS.contains(eventType)) {
-            logger.debug("Added/updated item: {}", event);
-            sourceGenerator.generateItems(writeGuardTime);
-        } else if (THING_EVENTS.contains(eventType)) {
-            logger.debug("Added/updated thing: {}", event);
-            sourceGenerator.generateThings(writeGuardTime);
-            sourceGenerator.generateActions(writeGuardTime);
-        }
     }
 }

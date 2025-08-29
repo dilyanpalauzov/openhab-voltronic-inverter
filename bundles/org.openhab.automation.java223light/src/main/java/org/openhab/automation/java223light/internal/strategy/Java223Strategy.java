@@ -40,7 +40,6 @@ import org.openhab.automation.java223light.common.Java223Exception;
 import org.openhab.automation.java223light.common.ReuseScriptInstance;
 import org.openhab.automation.java223light.common.RunScript;
 import org.openhab.automation.java223light.internal.Java223CompiledScript;
-import org.openhab.automation.java223light.internal.codegeneration.DependencyGenerator;
 import org.openhab.automation.java223light.internal.strategy.jarloader.JarFileManager.JarFileManagerFactory;
 import org.openhab.core.service.WatchService;
 import org.slf4j.Logger;
@@ -207,9 +206,6 @@ public class Java223Strategy implements ExecutionStrategyFactory, ExecutionStrat
         } else if (fullPath.getFileName().toString().endsWith("." + Java223Constants.JAR_FILE_TYPE)) {
             // jar will be scanned to be added to the JarFileManagerFactory
             // exclude convenience jar from processing
-            if (fullPath.getFileName().toString().equals(DependencyGenerator.CONVENIENCE_DEPENDENCIES_JAR)) {
-                return;
-            }
             switch (kind) {
                 case CREATE:
                     jarFileManagerfactory.addLibPackage(fullPath);

@@ -44,7 +44,6 @@ import javax.tools.StandardLocation;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.automation.java223light.common.Java223Exception;
-import org.openhab.automation.java223light.internal.codegeneration.DependencyGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -165,8 +164,6 @@ public class JarFileManager<M extends JavaFileManager> extends ForwardingJavaFil
 
             try (Stream<Path> libFileStream = Files.list(libDirectory)) {
                 List<Path> libFiles = libFileStream.filter(JAR_FILTER) //
-                        .filter((path) -> !path.getFileName().toString() // exclude convenience lib
-                                .equals(DependencyGenerator.CONVENIENCE_DEPENDENCIES_JAR)) //
                         .collect(Collectors.toList());
 
                 // first check if it's really needed, in case we overwrite a file with the same content
