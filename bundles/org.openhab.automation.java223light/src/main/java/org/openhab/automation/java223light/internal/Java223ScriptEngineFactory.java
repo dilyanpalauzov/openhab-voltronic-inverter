@@ -223,9 +223,6 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory
 
     @Override
     public Set<String> getSubscribedEventTypes() {
-    }
-
-    @Override
-    public void receive(Event event) {
+	return EVENTS;
     }
 }
