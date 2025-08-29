@@ -83,8 +83,6 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory implemen
 
     private final WatchService watchService;
 
-    private Integer writeGuardTime;
-
     private static final Set<ThingStatus> INITIALIZED = Set.of(ThingStatus.ONLINE, ThingStatus.OFFLINE,
             ThingStatus.UNKNOWN);
     private static final Set<String> ACTION_EVENTS = Set.of(ThingStatusInfoChangedEvent.TYPE);
@@ -112,8 +110,6 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory implemen
                 .valueAsOrElse(properties.get("additionalBundles"), String.class, "").trim();
         String additionalClassesConfig = ConfigParser
                 .valueAsOrElse(properties.get("additionalClasses"), String.class, "").trim();
-        writeGuardTime = ConfigParser.valueAsOrElse(properties.get("stabilityGenerationWaitTime"), Integer.class,
-                10000);
         Integer startupGuardTime = ConfigParser.valueAsOrElse(properties.get("startupGuardTime"), Integer.class, 60000);
         Integer scriptCacheSize = ConfigParser.valueAsOrElse(properties.get("scriptCacheSize"), Integer.class, 50);
         Boolean allowInstanceReuse = ConfigParser.valueAsOrElse(properties.get("allowInstanceReuse"), Boolean.class,
@@ -144,13 +140,10 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory implemen
         String additionalClassesConfig = ConfigParser.valueAsOrElse(properties.get("additionalClasses"), String.class,
                 "");
         Integer scriptCacheSize = ConfigParser.valueAsOrElse(properties.get("scriptCacheSize"), Integer.class, 50);
-        Integer stabilityGenerationWaitTime = ConfigParser.valueAsOrElse(properties.get("stabilityGenerationWaitTime"),
-                Integer.class, 10000);
         Boolean allowInstanceReuse = ConfigParser.valueAsOrElse(properties.get("allowInstanceReuse"), Boolean.class,
                 false);
 
         compiledScriptCache.setCacheSize(scriptCacheSize);
-        this.writeGuardTime = stabilityGenerationWaitTime;
         java223Strategy.setAllowInstanceReuse(allowInstanceReuse);
         logger.debug("java223 configuration update received ({})", properties);
     }
