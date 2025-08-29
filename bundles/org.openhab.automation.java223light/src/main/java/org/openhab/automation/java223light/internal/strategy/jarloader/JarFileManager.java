@@ -196,10 +196,6 @@ public class JarFileManager<M extends JavaFileManager> extends ForwardingJavaFil
         }
 
         public void addLibPackage(Path newLib) {
-            if (newLib.getFileName().toString() //
-                    .equals(DependencyGenerator.CONVENIENCE_DEPENDENCIES_JAR)) {
-                return;
-            }
             try {
                 FILEMANAGER_LOCK.lock();
                 logger.debug("Library to load to memory: {}", newLib);
