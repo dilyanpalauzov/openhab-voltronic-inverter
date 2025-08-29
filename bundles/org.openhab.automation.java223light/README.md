@@ -303,7 +303,6 @@ Tip : to access a remote OpenHAB installation scripts folder, you can copy, use 
 | `allowInstanceReuse`          | boolean | false   | Allow Script Instance Reuse     | Reuse an instance if found in the cache. Allow sharing data between subsequent executions. Note: Beware of concurrency issues. |
 | `additionalBundles`           | text    | -       | Additional Bundles              | Additional bundles exported for developing, concatenated by ",". |
 | `additionalClasses`           | text    | -       | Additional Classes              | Additional classes exported for developing, concatenated by ",". |
-| `startupGuardTime`           | integer | 60000   | Startup Guard Time              | Delay (in ms) before overwriting previously generated classes, at startup. Useful to not replace files from previous openHAB run with incomplete generation from a not fully loaded system. |
 
 
 # Examples

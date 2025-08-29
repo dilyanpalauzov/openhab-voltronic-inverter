@@ -26,13 +26,6 @@
 			<label>Additional Classes</label>
 			<description>Additional classes exported for developing, concatenated by ",".</description>
 		</parameter>
-		<parameter name="startupGuardTime" type="integer">
-			<advanced>true</advanced>
-			<label>Startup Guard Time</label>
-			<description>Delay (in ms) before overwriting previously generated classes, at startup. Useful to not replace files
-				from previous openHAB run with incomplete generation from a not fully loaded system.</description>
-			<default>60000</default>
-		</parameter>
 	</config-description>
 
 </addon:addon>

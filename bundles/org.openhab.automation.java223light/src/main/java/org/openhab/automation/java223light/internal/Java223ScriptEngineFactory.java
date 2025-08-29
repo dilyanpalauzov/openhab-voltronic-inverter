@@ -110,7 +110,6 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory implemen
                 .valueAsOrElse(properties.get("additionalBundles"), String.class, "").trim();
         String additionalClassesConfig = ConfigParser
                 .valueAsOrElse(properties.get("additionalClasses"), String.class, "").trim();
-        Integer startupGuardTime = ConfigParser.valueAsOrElse(properties.get("startupGuardTime"), Integer.class, 60000);
         Integer scriptCacheSize = ConfigParser.valueAsOrElse(properties.get("scriptCacheSize"), Integer.class, 50);
         Boolean allowInstanceReuse = ConfigParser.valueAsOrElse(properties.get("allowInstanceReuse"), Boolean.class,
                 false);
