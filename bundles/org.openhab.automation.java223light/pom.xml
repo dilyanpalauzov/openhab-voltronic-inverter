@@ -27,12 +27,6 @@
   <build>
     <resources>
       <resource>
-        <directory>src/helper/java</directory>
-        <includes>
-          <include>**/*.java</include>
-        </includes>
-      </resource>
-      <resource>
         <directory>src/main/resources/</directory>
       </resource>
     </resources>

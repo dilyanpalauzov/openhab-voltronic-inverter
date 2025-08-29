@@ -39,7 +39,6 @@ public class ScriptWrappingStrategy implements ScriptInterceptorStrategy {
     private static final Pattern IMPORT_PATTERN = Pattern.compile("import\\s+[A-Za-z][A-Za-z0-9_$.]*;\\s*");
 
     private static final String BOILERPLATE_CODE_BEFORE = """
-            import helper.generated.Java223Script;
             import org.openhab.core.library.items.*;
             import org.openhab.core.library.types.*;
             import org.openhab.core.library.types.HSBType.*;
