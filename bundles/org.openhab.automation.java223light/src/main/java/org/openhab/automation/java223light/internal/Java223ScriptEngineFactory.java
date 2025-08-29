@@ -36,7 +36,6 @@ import org.openhab.automation.java223light.internal.strategy.ScriptWrappingStrat
 import org.openhab.core.automation.RuleManager;
 import org.openhab.core.automation.module.script.ScriptEngineFactory;
 import org.openhab.core.config.core.ConfigParser;
-import org.openhab.core.events.EventSubscriber;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.items.MetadataRegistry;
 import org.openhab.core.items.events.ItemAddedEvent;
@@ -67,11 +66,10 @@ import ch.obermuhlner.scriptengine.java.packagelisting.PackageResourceListingStr
  *
  * @author Gwendal Roulleau - Initial contribution
  */
-@Component(service = { ScriptEngineFactory.class, Java223ScriptEngineFactory.class,
-        EventSubscriber.class }, configurationPid = "automation.java223")
+@Component(service = { ScriptEngineFactory.class,
+        Java223ScriptEngineFactory.class }, configurationPid = "automation.java223")
 @NonNullByDefault
-public class Java223ScriptEngineFactory extends JavaScriptEngineFactory
-        implements ScriptEngineFactory, EventSubscriber {
+public class Java223ScriptEngineFactory extends JavaScriptEngineFactory implements ScriptEngineFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(Java223ScriptEngineFactory.class);
 
@@ -214,10 +212,5 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory
         path = "/" + path;
 
         return bundleWiring.listResources(path, "*.class", 0);
-    }
-
-    @Override
-    public Set<String> getSubscribedEventTypes() {
-        return EVENTS;
     }
 }
