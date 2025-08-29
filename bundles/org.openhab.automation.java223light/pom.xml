@@ -59,7 +59,6 @@
               <sources>
                 <source>src/3rdparty/java</source>
                 <source>src/3rdparty/resources</source>
-                <source>src/helper/java</source>
               </sources>
             </configuration>
           </execution>
