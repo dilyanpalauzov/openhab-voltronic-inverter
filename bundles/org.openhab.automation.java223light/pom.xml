@@ -36,32 +36,12 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <executions>
-          <execution> <!-- Create the helper library and put it in the target class directory to be embedded inside the jar -->
-            <id>create-helper-jar</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-            <configuration>
-              <finalName>helper</finalName>
-              <classifier>lib</classifier>
-              <outputDirectory>${basedir}/target/classes</outputDirectory>
-              <includes>
-                <include>helper/**</include>
-              </includes>
-            </configuration>
-          </execution>
           <execution>
             <id>default-jar</id>
             <phase>package</phase>
             <goals>
               <goal>jar</goal>
             </goals>
-            <configuration>
-              <excludes>
-                <exclude>helper/**</exclude>
-              </excludes>
-            </configuration>
           </execution>
         </executions>
       </plugin>
