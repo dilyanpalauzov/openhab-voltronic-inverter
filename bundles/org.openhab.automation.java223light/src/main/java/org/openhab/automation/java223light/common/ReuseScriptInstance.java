@@ -22,7 +22,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
  * Mark a class candidate for a singleton instantiation.
- * The java223 module will try to use an already created instance
+ * The java223light module will try to use an already created instance
  * instead of creating one on each execution.
  * The instance will be searched in the cache.
  *
