@@ -67,7 +67,7 @@ import ch.obermuhlner.scriptengine.java.packagelisting.PackageResourceListingStr
  * @author Gwendal Roulleau - Initial contribution
  */
 @Component(service = { ScriptEngineFactory.class,
-        Java223ScriptEngineFactory.class }, configurationPid = "automation.java223")
+        Java223ScriptEngineFactory.class }, configurationPid = "automation.java223light")
 @NonNullByDefault
 public class Java223ScriptEngineFactory extends JavaScriptEngineFactory implements ScriptEngineFactory {
 
