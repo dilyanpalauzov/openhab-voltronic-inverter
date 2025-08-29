@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.script.ScriptEngine;
 
@@ -38,15 +36,10 @@ import org.openhab.core.automation.module.script.ScriptEngineFactory;
 import org.openhab.core.config.core.ConfigParser;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.items.MetadataRegistry;
-import org.openhab.core.items.events.ItemAddedEvent;
-import org.openhab.core.items.events.ItemRemovedEvent;
 import org.openhab.core.service.WatchService;
 import org.openhab.core.thing.ThingManager;
 import org.openhab.core.thing.ThingRegistry;
 import org.openhab.core.thing.ThingStatus;
-import org.openhab.core.thing.events.ThingAddedEvent;
-import org.openhab.core.thing.events.ThingRemovedEvent;
-import org.openhab.core.thing.events.ThingStatusInfoChangedEvent;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.component.annotations.Activate;
@@ -85,11 +78,6 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory implemen
 
     private static final Set<ThingStatus> INITIALIZED = Set.of(ThingStatus.ONLINE, ThingStatus.OFFLINE,
             ThingStatus.UNKNOWN);
-    private static final Set<String> ACTION_EVENTS = Set.of(ThingStatusInfoChangedEvent.TYPE);
-    private static final Set<String> ITEM_EVENTS = Set.of(ItemAddedEvent.TYPE, ItemRemovedEvent.TYPE);
-    private static final Set<String> THING_EVENTS = Set.of(ThingAddedEvent.TYPE, ThingRemovedEvent.TYPE);
-    private static final Set<String> EVENTS = Stream.of(ACTION_EVENTS, ITEM_EVENTS, THING_EVENTS).flatMap(Set::stream)
-            .collect(Collectors.toSet());
 
     @Activate
     public Java223ScriptEngineFactory(BundleContext bundleContext, Map<String, Object> properties,
