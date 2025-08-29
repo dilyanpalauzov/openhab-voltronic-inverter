@@ -14,12 +14,8 @@ package org.openhab.automation.java223light.internal;
 
 import static org.openhab.automation.java223light.common.Java223Constants.LIB_DIR;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -40,7 +36,6 @@ import org.openhab.automation.java223light.internal.strategy.ScriptWrappingStrat
 import org.openhab.core.automation.RuleManager;
 import org.openhab.core.automation.module.script.ScriptEngineFactory;
 import org.openhab.core.config.core.ConfigParser;
-import org.openhab.core.events.Event;
 import org.openhab.core.events.EventSubscriber;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.items.MetadataRegistry;
@@ -223,6 +218,6 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory
 
     @Override
     public Set<String> getSubscribedEventTypes() {
-	return EVENTS;
+        return EVENTS;
     }
 }
