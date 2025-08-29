@@ -55,7 +55,7 @@ public class ScriptWrappingStrategy implements ScriptInterceptorStrategy {
             import org.openhab.core.library.types.UpDownType.*;
 
 
-            public class WrappedJavaScript extends Java223Script {
+            public class WrappedJavaScript {
                 public Object main() {
             """;
 
