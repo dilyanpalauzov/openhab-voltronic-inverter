@@ -94,10 +94,6 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory implemen
         this.bundleContext = bundleContext;
         this.bundleWiring = bundleContext.getBundle().adapt(BundleWiring.class);
 
-        String additionalBundlesConfig = ConfigParser
-                .valueAsOrElse(properties.get("additionalBundles"), String.class, "").trim();
-        String additionalClassesConfig = ConfigParser
-                .valueAsOrElse(properties.get("additionalClasses"), String.class, "").trim();
         Integer scriptCacheSize = ConfigParser.valueAsOrElse(properties.get("scriptCacheSize"), Integer.class, 50);
         Boolean allowInstanceReuse = ConfigParser.valueAsOrElse(properties.get("allowInstanceReuse"), Boolean.class,
                 false);
@@ -122,10 +118,6 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory implemen
 
     @Modified
     protected void modified(Map<String, Object> properties) {
-        String additionalBundlesConfig = ConfigParser.valueAsOrElse(properties.get("additionalBundles"), String.class,
-                "");
-        String additionalClassesConfig = ConfigParser.valueAsOrElse(properties.get("additionalClasses"), String.class,
-                "");
         Integer scriptCacheSize = ConfigParser.valueAsOrElse(properties.get("scriptCacheSize"), Integer.class, 50);
         Boolean allowInstanceReuse = ConfigParser.valueAsOrElse(properties.get("allowInstanceReuse"), Boolean.class,
                 false);

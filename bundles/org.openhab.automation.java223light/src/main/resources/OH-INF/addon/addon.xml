@@ -18,14 +18,6 @@
 			<description>Reuse an instance if found in the cache. Allow sharing data between subsequent executions. Note: Beware
 				of concurrency issues</description>
 		</parameter>
-		<parameter name="additionalBundles" type="text">
-			<label>Additional Bundles</label>
-			<description>Additional bundles exported for developing, concatenated by ",".</description>
-		</parameter>
-		<parameter name="additionalClasses" type="text">
-			<label>Additional Classes</label>
-			<description>Additional classes exported for developing, concatenated by ",".</description>
-		</parameter>
 	</config-description>
 
 </addon:addon>

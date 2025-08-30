@@ -274,9 +274,6 @@ A jar file, purely for convenience, is exported, at startup, from the openHAB ru
 
 You can ask the Java223 bundle to add to this exported jar some classes by using the following Java223 configuration properties:
 
-- `additionalBundles`: Additional package name exposed by bundles running in OpenHAB. Use ',' as a separator.
-- `additionalClasses`: Additional individual classes. Use ',' as a separator.
-
 ## Configure your project
 
 In order to use an IDE and write code with autocompletion, javadoc, and all other syntax sugar, you just have to add to your project :
@@ -296,8 +293,6 @@ Tip : to access a remote OpenHAB installation scripts folder, you can copy, use 
 |--------------------------------|---------|---------|---------------------------------|-------------|
 | `scriptCacheSize`             | text    | 50      | Script Cache Size              | Script compilation cache size. 0 to disable. A positive number allows keeping compilation result. |
 | `allowInstanceReuse`          | boolean | false   | Allow Script Instance Reuse     | Reuse an instance if found in the cache. Allow sharing data between subsequent executions. Note: Beware of concurrency issues. |
-| `additionalBundles`           | text    | -       | Additional Bundles              | Additional bundles exported for developing, concatenated by ",". |
-| `additionalClasses`           | text    | -       | Additional Classes              | Additional classes exported for developing, concatenated by ",". |
 
 
 # Examples
