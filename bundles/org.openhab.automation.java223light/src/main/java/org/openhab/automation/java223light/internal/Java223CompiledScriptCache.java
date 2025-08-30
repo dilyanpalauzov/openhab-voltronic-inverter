@@ -13,16 +13,12 @@
 package org.openhab.automation.java223light.internal;
 
 import java.nio.file.Path;
-import java.util.Map;
 
 import javax.script.ScriptException;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.core.service.WatchService;
 import org.openhab.core.service.WatchService.Kind;
-
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 
 /**
  * This class caches compiled scripts
@@ -32,40 +28,12 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 @NonNullByDefault
 public class Java223CompiledScriptCache implements WatchService.WatchEventListener {
 
-    private int cacheSize;
-
-    private Cache<String, Java223CompiledScript> cache;
-
-    public Java223CompiledScriptCache(int cacheSize) {
+    public Java223CompiledScriptCache() {
         super();
-        this.cacheSize = cacheSize;
-        cache = Caffeine.newBuilder().maximumSize(cacheSize).build();
-    }
-
-    /**
-     * Recreate cache with a new size
-     *
-     * @param newCacheSize New cache size
-     */
-    public void setCacheSize(Integer newCacheSize) {
-        if (!newCacheSize.equals(cacheSize)) {
-            this.cacheSize = newCacheSize;
-            cache = Caffeine.newBuilder().maximumSize(cacheSize).build();
-        }
     }
 
     public Java223CompiledScript getOrCompile(String script, Compiler compiler) throws ScriptException {
-        Java223CompiledScript wrapper = null;
-        if (cacheSize > 0) {
-            wrapper = cache.getIfPresent(script);
-        }
-        if (wrapper == null) {
-            wrapper = compiler.compile(script);
-            if (cacheSize > 0) {
-                cache.put(script, wrapper);
-            }
-        }
-        return wrapper;
+        return compiler.compile(script);
     }
 
     public interface Compiler {
@@ -78,8 +46,5 @@ public class Java223CompiledScriptCache implements WatchService.WatchEventListen
      */
     @Override
     public void processWatchEvent(Kind kind, Path path) {
-        for (Map.Entry<String, Java223CompiledScript> entry : cache.asMap().entrySet()) {
-            entry.getValue().invalidate(entry.getKey());
-        }
     }
 }

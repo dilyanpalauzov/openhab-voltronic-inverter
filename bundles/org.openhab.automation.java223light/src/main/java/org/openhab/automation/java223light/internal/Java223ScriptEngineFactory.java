@@ -94,7 +94,6 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory implemen
         this.bundleContext = bundleContext;
         this.bundleWiring = bundleContext.getBundle().adapt(BundleWiring.class);
 
-        Integer scriptCacheSize = ConfigParser.valueAsOrElse(properties.get("scriptCacheSize"), Integer.class, 50);
         Boolean allowInstanceReuse = ConfigParser.valueAsOrElse(properties.get("allowInstanceReuse"), Boolean.class,
                 false);
 
@@ -103,7 +102,7 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory implemen
                 bundleContext.getBundle().adapt(BundleWiring.class).getClassLoader());
         java223Strategy.setAllowInstanceReuse(allowInstanceReuse);
         scriptWrappingStrategy = new ScriptWrappingStrategy();
-        compiledScriptCache = new Java223CompiledScriptCache(scriptCacheSize);
+        compiledScriptCache = new Java223CompiledScriptCache();
 
         this.watchService = watchService;
         // first building of internal in memory lib representation
@@ -118,12 +117,8 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory implemen
 
     @Modified
     protected void modified(Map<String, Object> properties) {
-        Integer scriptCacheSize = ConfigParser.valueAsOrElse(properties.get("scriptCacheSize"), Integer.class, 50);
-        Boolean allowInstanceReuse = ConfigParser.valueAsOrElse(properties.get("allowInstanceReuse"), Boolean.class,
-                false);
-
-        compiledScriptCache.setCacheSize(scriptCacheSize);
-        java223Strategy.setAllowInstanceReuse(allowInstanceReuse);
+        java223Strategy.setAllowInstanceReuse(
+                ConfigParser.valueAsOrElse(properties.get("allowInstanceReuse"), Boolean.class, false));
         logger.debug("java223 configuration update received ({})", properties);
     }
 

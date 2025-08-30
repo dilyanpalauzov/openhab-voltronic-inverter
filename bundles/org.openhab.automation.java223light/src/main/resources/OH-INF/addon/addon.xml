@@ -8,11 +8,6 @@
 	<description>This bundle allows using Java in JSR223 Light scripts.</description>
 
 	<config-description>
-		<parameter name="scriptCacheSize" type="text">
-			<default>50</default>
-			<label>Script Cache Size</label>
-			<description>Script compilation cache size. 0 to disable. A positive number allows keeping compilation result.</description>
-		</parameter>
 		<parameter name="allowInstanceReuse" type="boolean">
 			<label>Allow Script Instance Reuse</label>
 			<description>Reuse an instance if found in the cache. Allow sharing data between subsequent executions. Note: Beware

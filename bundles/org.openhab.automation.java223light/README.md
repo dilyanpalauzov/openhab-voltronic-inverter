@@ -9,7 +9,6 @@ Features :
 - library support for sharing code (.jar and .java)
 - rule annotations available in the helper library for creating rules the easiest way
 - helper library files auto generation for items, things, and actions, with strong typing and ease of use
-- cache compiled scripts in memory for blazingly fast executions after the first one (sub millisecond overload)
 - no boilerplate code for simple script: you can do a one liner script, as declaring a class and a method is optional.
 - optional reuse of instances script to share values between execution occurrences
 - designed to be easily used with your favorite IDE
@@ -223,8 +222,6 @@ The Java223 automation bundle has an option `allowInstanceReuse`. If set to true
 Of course, for this to work, your script has to be re-executed. So, script files in the `automation/jsr223` directory **CANNOT** use this functionality, as they are only executed ONCE by nature, when OpenHAB starts, or when they are created or modified (which is another way of saying deleted/recreated).
 **BUT**, you should also note that Rule inner working is different: your rule code is some kind of lambda, and so is always executed on the same instance. It means you can share information here between rules (as a field).
 
-Take note that it uses the compilation cache. So if your cache is not big enough (50 scripts by default), persistence of your fields values is not assured.
-
 
 <a id="noboilerplate"></a>
 
@@ -266,32 +263,10 @@ Example of transformation appending the word "Hello" to the input, using the "no
 return "Hello " + input.toString();
 ```
 
-# Use your IDE
-
-## convenience-dependencies.jar
-
-A jar file, purely for convenience, is exported, at startup, from the openHAB runtime and added to the lib directory. This jar is EXCLUDED from entering the compilation unit of your script; its sole purpose is for you to use inside an IDE. It contains most of the OpenHAB classes you probably need to write and compile scripts and rules. By using this jar in your project, you probably won't have to set up advanced dependencies management tools such as Maven or Gradle.
-
-You can ask the Java223 bundle to add to this exported jar some classes by using the following Java223 configuration properties:
-
-## Configure your project
-
-In order to use an IDE and write code with autocompletion, javadoc, and all other syntax sugar, you just have to add to your project :
-
-- **As a source directory**: the root directory of your scripts, under `automation/jsr223` (probably `automation/jsr223/java`, but you can use what you want)
-- **As a source directory**: the root directory reserved as the Java223 library location `automation/lib/java`
-- **As a library**: `automation/lib/java/helper-lib.jar`
-- **As a library**: `automation/lib/java/convenience-dependencies.jar`
-
-Tip : to access a remote OpenHAB installation scripts folder, you can copy, use Webdav, a Samba share, a SFTP virtual file system or sync feature (available on your OS or included in your IDE), or any other mean you can think about.
-
-<a id="examples"></a>
-
 # Configuration parameters
 
 | Parameter Name                 | Type    | Default | Label                           | Description |
 |--------------------------------|---------|---------|---------------------------------|-------------|
-| `scriptCacheSize`             | text    | 50      | Script Cache Size              | Script compilation cache size. 0 to disable. A positive number allows keeping compilation result. |
 | `allowInstanceReuse`          | boolean | false   | Allow Script Instance Reuse     | Reuse an instance if found in the cache. Allow sharing data between subsequent executions. Note: Beware of concurrency issues. |
 
 
