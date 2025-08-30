@@ -72,7 +72,6 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory implemen
     private final PackageResourceListingStrategy osgiPackageResourceListingStrategy;
     private final Java223Strategy java223Strategy;
     private final ScriptInterceptorStrategy scriptWrappingStrategy;
-    private final Java223CompiledScriptCache compiledScriptCache;
 
     private final WatchService watchService;
 
@@ -102,7 +101,6 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory implemen
                 bundleContext.getBundle().adapt(BundleWiring.class).getClassLoader());
         java223Strategy.setAllowInstanceReuse(allowInstanceReuse);
         scriptWrappingStrategy = new ScriptWrappingStrategy();
-        compiledScriptCache = new Java223CompiledScriptCache();
 
         this.watchService = watchService;
         // first building of internal in memory lib representation
@@ -141,8 +139,7 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory implemen
     @Override
     public @Nullable ScriptEngine createScriptEngine(String scriptType) {
         if (getScriptTypes().contains(scriptType)) {
-            return new Java223ScriptEngine(compiledScriptCache, java223Strategy, osgiPackageResourceListingStrategy,
-                    scriptWrappingStrategy);
+            return new Java223ScriptEngine(java223Strategy, osgiPackageResourceListingStrategy, scriptWrappingStrategy);
         }
         return null;
     }

@@ -58,19 +58,16 @@ public class Java223ScriptEngine extends JavaScriptEngine implements Invocable {
 
     private @Nullable Java223CompiledScript lastCompiledScript;
 
-    private final Java223CompiledScriptCache cache;
-
     private final Java223Strategy java223Strategy;
     private final PackageResourceListingStrategy osgiPackageResourceListingStrategy;
     private final ScriptInterceptorStrategy scriptInterceptorStrategy;
     private final List<String> compilationOptions = Arrays.asList("-g", "-parameters");
     private final NameStrategy nameStrategy = new DefaultNameStrategy();
 
-    public Java223ScriptEngine(Java223CompiledScriptCache compiledScriptCache, Java223Strategy java223Strategy,
+    public Java223ScriptEngine(Java223Strategy java223Strategy,
             PackageResourceListingStrategy osgiPackageResourceListingStrategy,
             ScriptInterceptorStrategy scriptInterceptorStrategy) {
         super();
-        this.cache = compiledScriptCache;
         this.java223Strategy = java223Strategy;
         this.osgiPackageResourceListingStrategy = osgiPackageResourceListingStrategy;
         this.scriptInterceptorStrategy = scriptInterceptorStrategy;
