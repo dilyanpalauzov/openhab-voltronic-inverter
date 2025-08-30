@@ -26,6 +26,7 @@ import org.openhab.automation.java223light.internal.strategy.Java223Strategy;
 
 import ch.obermuhlner.scriptengine.java.JavaCompiledScript;
 import ch.obermuhlner.scriptengine.java.JavaScriptEngine;
+import ch.obermuhlner.scriptengine.java.execution.DefaultExecutionStrategy;
 
 /**
  * Custom java compiled script instance wrapping additional information
@@ -60,7 +61,7 @@ public class Java223CompiledScript extends JavaCompiledScript {
      * @param java223Strategy the {@link Java223Strategy}
      */
     public Java223CompiledScript(JavaScriptEngine engine, Class<?> compiledClass, Java223Strategy java223Strategy) {
-        super(engine, compiledClass, null, java223Strategy, java223Strategy);
+        super(engine, compiledClass, null, new DefaultExecutionStrategy(compiledClass), java223Strategy);
         this.java223CompiledClass = compiledClass;
         this.java223Strategy = java223Strategy;
     }

@@ -46,7 +46,6 @@ import org.slf4j.LoggerFactory;
 import ch.obermuhlner.scriptengine.java.MemoryFileManager;
 import ch.obermuhlner.scriptengine.java.bindings.BindingStrategy;
 import ch.obermuhlner.scriptengine.java.compilation.CompilationStrategy;
-import ch.obermuhlner.scriptengine.java.execution.ExecutionStrategyFactory;
 import ch.obermuhlner.scriptengine.java.name.DefaultNameStrategy;
 import ch.obermuhlner.scriptengine.java.name.NameStrategy;
 
@@ -56,8 +55,7 @@ import ch.obermuhlner.scriptengine.java.name.NameStrategy;
  * @author Gwendal Roulleau - Initial contribution
  */
 @NonNullByDefault
-public class Java223Strategy
-        implements ExecutionStrategyFactory, BindingStrategy, CompilationStrategy, WatchService.WatchEventListener {
+public class Java223Strategy implements BindingStrategy, CompilationStrategy, WatchService.WatchEventListener {
 
     private static final Logger logger = LoggerFactory.getLogger(Java223Strategy.class);
 
@@ -76,11 +74,6 @@ public class Java223Strategy
         super();
         this.additionalBindings = additionalBindings;
         jarFileManagerfactory = new JarFileManagerFactory(LIB_DIR, classLoader);
-    }
-
-    @Override
-    public ExecutionStrategy create(@Nullable Class<?> clazz) throws ScriptException {
-        return this;
     }
 
     /**
