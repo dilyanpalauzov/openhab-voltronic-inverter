@@ -17,8 +17,6 @@ import java.nio.file.Path;
 import javax.script.ScriptException;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.openhab.core.service.WatchService;
-import org.openhab.core.service.WatchService.Kind;
 
 /**
  * This class caches compiled scripts
@@ -26,7 +24,7 @@ import org.openhab.core.service.WatchService.Kind;
  * @author Gwendal Roulleau - Initial contribution
  */
 @NonNullByDefault
-public class Java223CompiledScriptCache implements WatchService.WatchEventListener {
+public class Java223CompiledScriptCache {
 
     public Java223CompiledScriptCache() {
         super();
@@ -38,13 +36,5 @@ public class Java223CompiledScriptCache implements WatchService.WatchEventListen
 
     public interface Compiler {
         Java223CompiledScript compile(String script) throws ScriptException;
-    }
-
-    /**
-     * If a change is detected somewhere in the libraries,
-     * then we invalidate all cache
-     */
-    @Override
-    public void processWatchEvent(Kind kind, Path path) {
     }
 }

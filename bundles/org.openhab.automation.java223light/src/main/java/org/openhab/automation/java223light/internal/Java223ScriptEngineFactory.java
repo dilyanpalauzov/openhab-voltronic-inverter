@@ -109,8 +109,6 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory implemen
         java223Strategy.scanLibDirectory();
         // When a lib change, update internal lib storage
         watchService.registerListener(java223Strategy, LIB_DIR);
-        // When a lib change, invalidate cache of compiled script
-        watchService.registerListener(compiledScriptCache, LIB_DIR);
 
         logger.info("Bundle activated");
     }
@@ -125,7 +123,6 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory implemen
     @Deactivate
     public void deactivate() {
         watchService.unregisterListener(java223Strategy);
-        watchService.unregisterListener(compiledScriptCache);
     }
 
     @Override
