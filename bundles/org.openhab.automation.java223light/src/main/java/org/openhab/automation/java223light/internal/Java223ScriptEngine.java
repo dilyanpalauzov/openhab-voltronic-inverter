@@ -123,12 +123,8 @@ public class Java223ScriptEngine extends JavaScriptEngine implements Invocable {
                 throw new ScriptException("script cannot be null");
             }
             String script = scriptInterceptorStrategy.intercept(originalScript);
-
-            // reuse the original compilation class, potentially cached
-            Java223CompiledScriptCache.Compiler compilation = (_script) -> {
-                return new Java223CompiledScript(this, this.internalCompilation(_script), java223Strategy);
-            };
-            var compiledScriptResult = cache.getOrCompile(script, compilation);
+            Java223CompiledScript compiledScriptResult = new Java223CompiledScript(this,
+                    this.internalCompilation(script), java223Strategy);
             lastCompiledScript = compiledScriptResult;
             return compiledScriptResult;
         } catch (NoClassDefFoundError e) {
