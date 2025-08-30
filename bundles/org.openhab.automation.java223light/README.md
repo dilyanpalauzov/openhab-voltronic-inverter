@@ -59,7 +59,7 @@ public class SimpleClass {
 
 (In fact it can even be a simpler one-liner, see the [no boilerplate section](#noboilerplate))
 
-When OpenHAB presents a java script to the Java223 automation bundle, it searches for methods with name like `main`, or `eval`, or `run`, or `exec` and then runs them (from here we will refer to those as the "runnable methods"). Returning a value is supported but optional.  That's all you need for a very simple script !
+When OpenHAB presents a java script to the Java223 automation bundle, it searches for a method with name `main`and then runs it. Returning a value is supported but optional.  That's all you need for a very simple script !
 
 A note about the context : each script has its own context, its own ClassLoader. It means that scripts are perfectly separated, and cannot interact with, or even see, each other. But do not worry, because there are dedicated features for this ([shared cache](#sharedcache) for sharing values, [library](#library) for sharing code).
 
@@ -70,7 +70,7 @@ Of course, a script needs to communicate with OpenHAB to be useful. We will call
 With this Java223 bundle, it is done by the way of automatic injection. It means that you don't need to do anything special. You just have to declare variable in your script and the bundle will take care of injecting the corresponding 'openHAB input' value in it. There are three input injection possibilities:
 
 - as a field in your script (see [example](#fieldinjection))
-- as a method parameter in your runnable methods (see [example](#parameterinjection))
+- as a method parameter in your main method (see [example](#parameterinjection))
 - as a method parameter in the constructor of your  script. (see [example](#constructorinjection))
 
 The variable name is used to find the correct value to inject, so take care of your spelling (full reference in [official documentation about OpenHAB JSR223 support](https://www.openhab.org/docs/configuration/jsr223.html#scriptextension-objects-all-jsr223-languages) ), or inherit the [Java223Script helper class](#java223script) to directly have the right variable names.
@@ -201,7 +201,6 @@ Here are all functionalities of the helper-lib:
 - `@Trigger`, `@Conditions`, `@Rule` have many parameter. Some parameters add functionality, others can overwrite default behavior (for example using the method name for the label of a rule).
 - Pre-made event objects that you can use as a parameter in a rule are defined in the package `helper.rules.eventinfo`. You can define your own if some are missing (do not hesitate to make a Pull Request)
 - If you want all the triggering event input parameters in a map for a rule, you can use the parameter `Map<String, ?> inputs`.
-- You can set the `@Rule` annotation on a method, but also on many type of field containing code to execute, such as Function, Runnable... Take a look at the class `Java223Rule` for an exhaustive list of what is supported. You can even switch the value of the field containing code at runtime, thus making the code your rule execute even more dynamic.
 
 <a id="sharedcache"></a>
 
@@ -259,7 +258,7 @@ You can use Java223 script in transformation.
 A transformation is a piece of code with an input and an output. So you just have to respect this contract:
 
 - you can use the OpenHAB input value named 'input'. Auto-injection is possible. Or you can inherit the Java223Script, as it is already declared.
-- your runnable method must return a value
+- your main() method must return a value
 
 Example of transformation appending the word "Hello" to the input, using the "no boilerplate" functionality:
 

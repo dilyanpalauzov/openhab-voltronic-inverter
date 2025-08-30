@@ -62,8 +62,6 @@ public class Java223Strategy implements ExecutionStrategyFactory, ExecutionStrat
 
     private static final Logger logger = LoggerFactory.getLogger(Java223Strategy.class);
 
-    private static final List<String> METHOD_NAMES_TO_EXECUTE = Arrays.asList("eval", "main", "run", "exec");
-
     // Additional bindings, not in the openhab JSR 223 specification
     private final Map<String, Object> additionalBindings;
 
@@ -133,7 +131,7 @@ public class Java223Strategy implements ExecutionStrategyFactory, ExecutionStrat
         Optional<Object> returned = null;
         for (Method method : instance.getClass().getMethods()) {
             // methods with a special name
-            if (METHOD_NAMES_TO_EXECUTE.contains(method.getName())) {
+            if (method.getName().equals("main")) {
                 try {
                     Object[] parameterValues = BindingInjector.getParameterValuesFor(classLoader, method, bindings,
                             null);
@@ -161,8 +159,8 @@ public class Java223Strategy implements ExecutionStrategyFactory, ExecutionStrat
             return returned.orElse(null);
         }
 
-        throw new ScriptException(String.format("cannot execute: %s doesn't have a method named eval/main/run",
-                compiledClass.getSimpleName()));
+        throw new ScriptException(
+                String.format("cannot execute: %s doesn't have a method named main", compiledClass.getSimpleName()));
     }
 
     @Override
