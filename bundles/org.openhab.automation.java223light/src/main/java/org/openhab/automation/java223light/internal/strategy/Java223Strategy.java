@@ -17,7 +17,6 @@ import static org.openhab.automation.java223light.common.Java223Constants.LIB_DI
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -25,7 +24,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.script.ScriptException;
@@ -90,62 +88,6 @@ public class Java223Strategy implements BindingStrategy, CompilationStrategy, Wa
         bindings.put("bindings", bindings);
         // adding some custom additional fields
         bindings.putAll(additionalBindings);
-    }
-
-    /**
-     * Contrary to the original architecture, this executes method doesn't use an instance, but the CompiledScript
-     * itself. It is indeed responsible for instantiation, with the bindings data.
-     * 
-     * @param instance an instantiated script
-     * @param bindings bindings data to inject
-     * @return Execution result
-     * @throws ScriptException When script cannot execute
-     */
-    public @Nullable Object execute(Object instance, Map<String, Object> bindings) throws ScriptException {
-
-        Class<?> compiledClass = instance.getClass();
-
-        // inject bindings data in the script
-        ClassLoader classLoader = compiledClass.getClassLoader();
-        if (classLoader == null) { // should not happen
-            throw new Java223Exception("Cannot get the classloader of " + compiledClass.getName());
-        }
-        BindingInjector.injectBindingsInto(classLoader, bindings, instance);
-
-        // find methods to execute
-        Optional<Object> returned = null;
-        for (Method method : instance.getClass().getMethods()) {
-            // methods with a special name
-            if (method.getName().equals("main")) {
-                try {
-                    Object[] parameterValues = BindingInjector.getParameterValuesFor(classLoader, method, bindings,
-                            null);
-                    var returnedLocal = method.invoke(instance, parameterValues);
-                    // keep arbitrarily only the first returned value
-                    if (returned == null || returned.isEmpty()) {
-                        if (returnedLocal != null) {
-                            returned = Optional.of(returnedLocal);
-                        } else {
-                            returned = Optional.empty();
-                        }
-                    }
-                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
-                        | InstantiationException e) {
-                    String simpleName = instance.getClass().getSimpleName();
-                    logger.error("Error executing entry point {} in {}", method.getName(), simpleName, e);
-                    throw new ScriptException(String.format("Error executing entry point %s in %s, exception %s",
-                            method.getName(), simpleName, e.getMessage()));
-                }
-            }
-        }
-
-        // return if there was at least one execution
-        if (returned != null) {
-            return returned.orElse(null);
-        }
-
-        throw new ScriptException(
-                String.format("cannot execute: %s doesn't have a method named main", compiledClass.getSimpleName()));
     }
 
     @Override

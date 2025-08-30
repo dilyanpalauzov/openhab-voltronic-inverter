@@ -12,8 +12,11 @@
  */
 package org.openhab.automation.java223light.internal;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.script.Bindings;
 import javax.script.ScriptContext;
@@ -21,8 +24,11 @@ import javax.script.ScriptException;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.openhab.automation.java223light.common.BindingInjector;
 import org.openhab.automation.java223light.common.Java223Exception;
 import org.openhab.automation.java223light.internal.strategy.Java223Strategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ch.obermuhlner.scriptengine.java.JavaCompiledScript;
 import ch.obermuhlner.scriptengine.java.JavaScriptEngine;
@@ -44,6 +50,7 @@ public class Java223CompiledScript extends JavaCompiledScript {
     private Object java223CompiledInstance;
 
     private Class<?> java223CompiledClass;
+    private final Logger logger = LoggerFactory.getLogger(Java223CompiledScript.class);
 
     /**
      * Hold the script source if, and only if, the script should be recompiled the next time it is needed
@@ -114,8 +121,49 @@ public class Java223CompiledScript extends JavaCompiledScript {
         // instantiate the script
         Object compiledInstance = java223Strategy.construct(this, mergedBindings);
 
-        // execute
-        return java223Strategy.execute(compiledInstance, mergedBindings);
+        Class<?> compiledClass = compiledInstance.getClass();
+
+        // inject bindings data in the script
+        ClassLoader classLoader = compiledClass.getClassLoader();
+        if (classLoader == null) { // should not happen
+            throw new Java223Exception("Cannot get the classloader of " + compiledClass.getName());
+        }
+        BindingInjector.injectBindingsInto(classLoader, mergedBindings, compiledInstance);
+
+        // find methods to execute
+        Optional<Object> returned = null;
+        for (Method method : compiledInstance.getClass().getMethods()) {
+            // methods with a special name
+            if (method.getName().equals("main")) {
+                try {
+                    Object[] parameterValues = BindingInjector.getParameterValuesFor(classLoader, method,
+                            mergedBindings, null);
+                    var returnedLocal = method.invoke(compiledInstance, parameterValues);
+                    // keep arbitrarily only the first returned value
+                    if (returned == null || returned.isEmpty()) {
+                        if (returnedLocal != null) {
+                            returned = Optional.of(returnedLocal);
+                        } else {
+                            returned = Optional.empty();
+                        }
+                    }
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                        | InstantiationException e) {
+                    String simpleName = compiledInstance.getClass().getSimpleName();
+                    logger.error("Error executing entry point {} in {}", method.getName(), simpleName, e);
+                    throw new ScriptException(String.format("Error executing entry point %s in %s, exception %s",
+                            method.getName(), simpleName, e.getMessage()));
+                }
+            }
+        }
+
+        // return if there was at least one execution
+        if (returned != null) {
+            return returned.orElse(null);
+        }
+
+        throw new ScriptException(
+                String.format("cannot execute: %s doesn't have a method named main", compiledClass.getSimpleName()));
     }
 
     @Override
