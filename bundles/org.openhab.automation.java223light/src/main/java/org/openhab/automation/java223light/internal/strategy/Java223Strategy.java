@@ -71,12 +71,11 @@ public class Java223Strategy implements ExecutionStrategyFactory, ExecutionStrat
     NameStrategy nameStrategy = new DefaultNameStrategy();
     JarFileManagerFactory jarFileManagerfactory;
 
-    private boolean allowInstanceReuseDefaultProperty;
+    private boolean allowInstanceReuseDefaultProperty = false;
 
     public Java223Strategy(Map<String, Object> additionalBindings, ClassLoader classLoader) {
         super();
         this.additionalBindings = additionalBindings;
-        this.allowInstanceReuseDefaultProperty = false;
         jarFileManagerfactory = new JarFileManagerFactory(LIB_DIR, classLoader);
     }
 
