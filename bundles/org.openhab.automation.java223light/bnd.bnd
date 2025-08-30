@@ -1,8 +1,6 @@
 Bundle-SymbolicName: ${project.artifactId}
 DynamicImport-Package: *
 Import-Package: \
-javax.measure,\
-javax.measure.quantity,\
 org.openhab.core.audio,\
 org.openhab.core.automation,\
 org.openhab.core.automation.util,\
