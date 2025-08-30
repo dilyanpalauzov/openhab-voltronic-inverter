@@ -59,7 +59,7 @@ public class SimpleClass {
 
 (In fact it can even be a simpler one-liner, see the [no boilerplate section](#noboilerplate))
 
-When OpenHAB presents a java script to the Java223 automation bundle, it searches for methods with name like `main`, or `eval`, or `run`, or `exec`, or any methods annotated with `@RunScript` and then runs them (from here we will refer to those as the "runnable methods"). Returning a value is supported but optional.  That's all you need for a very simple script !
+When OpenHAB presents a java script to the Java223 automation bundle, it searches for methods with name like `main`, or `eval`, or `run`, or `exec` and then runs them (from here we will refer to those as the "runnable methods"). Returning a value is supported but optional.  That's all you need for a very simple script !
 
 A note about the context : each script has its own context, its own ClassLoader. It means that scripts are perfectly separated, and cannot interact with, or even see, each other. But do not worry, because there are dedicated features for this ([shared cache](#sharedcache) for sharing values, [library](#library) for sharing code).
 
@@ -157,8 +157,6 @@ As a reference, in the super handy Java223Script helper abstract class, we are u
 **This is the most useful feature of this entire bundle.**
 
 The Java223 bundle also copies in your `automation\lib\java` a pre-compiled jar with a set of library files inside. This jar is also no more, no less, a standard library JAR, and is an example of how powerful the OpenHAB JSR223 feature is. It contains all you need to define Rules with the help of simple-to-use annotations. The entry point is the `RuleAnnotationParser` class. The `parse` method automatically scans your script, searching for annotated method defining rules, and then creates and registers them.
-
-Tip : But you don't have to care about the inner working and parsing ! The best way to use this functionality is to extend the `Java223Script`, as it already contains a call to the `parse` method in a `@RunScript` annotated method.
 
 When combined with all the aforementioned helpers, see how easy it is to define a rule.
 

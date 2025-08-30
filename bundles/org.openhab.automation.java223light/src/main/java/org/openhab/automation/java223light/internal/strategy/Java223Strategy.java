@@ -38,7 +38,6 @@ import org.openhab.automation.java223light.common.BindingInjector;
 import org.openhab.automation.java223light.common.Java223Constants;
 import org.openhab.automation.java223light.common.Java223Exception;
 import org.openhab.automation.java223light.common.ReuseScriptInstance;
-import org.openhab.automation.java223light.common.RunScript;
 import org.openhab.automation.java223light.internal.Java223CompiledScript;
 import org.openhab.automation.java223light.internal.strategy.jarloader.JarFileManager.JarFileManagerFactory;
 import org.openhab.core.service.WatchService;
@@ -134,8 +133,8 @@ public class Java223Strategy implements ExecutionStrategyFactory, ExecutionStrat
         // find methods to execute
         Optional<Object> returned = null;
         for (Method method : instance.getClass().getMethods()) {
-            // methods with a special name, or methods with a special annotation
-            if (METHOD_NAMES_TO_EXECUTE.contains(method.getName()) || method.getAnnotation(RunScript.class) != null) {
+            // methods with a special name
+            if (METHOD_NAMES_TO_EXECUTE.contains(method.getName())) {
                 try {
                     Object[] parameterValues = BindingInjector.getParameterValuesFor(classLoader, method, bindings,
                             null);
@@ -163,8 +162,7 @@ public class Java223Strategy implements ExecutionStrategyFactory, ExecutionStrat
             return returned.orElse(null);
         }
 
-        throw new ScriptException(String.format(
-                "cannot execute: %s doesn't have a method named eval/main/run, or a RunScript annotated method",
+        throw new ScriptException(String.format("cannot execute: %s doesn't have a method named eval/main/run",
                 compiledClass.getSimpleName()));
     }
 
