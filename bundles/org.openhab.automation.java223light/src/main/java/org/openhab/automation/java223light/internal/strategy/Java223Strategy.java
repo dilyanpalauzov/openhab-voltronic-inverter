@@ -37,7 +37,6 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.automation.java223light.common.BindingInjector;
 import org.openhab.automation.java223light.common.Java223Constants;
 import org.openhab.automation.java223light.common.Java223Exception;
-import org.openhab.automation.java223light.common.ReuseScriptInstance;
 import org.openhab.automation.java223light.internal.Java223CompiledScript;
 import org.openhab.automation.java223light.internal.strategy.jarloader.JarFileManager.JarFileManagerFactory;
 import org.openhab.core.service.WatchService;
@@ -263,22 +262,15 @@ public class Java223Strategy implements ExecutionStrategyFactory, ExecutionStrat
     @SuppressWarnings("null")
     public Object construct(Java223CompiledScript compiledScript, Map<String, Object> bindings) {
 
-        // default re-instantiation option overwritten by annotation if present
-        boolean instanceReuse = allowInstanceReuseDefaultProperty;
         Class<?> compiledClass = null;
         try {
             compiledClass = compiledScript.getCompiledClassSafe();
         } catch (ScriptException e) {
             throw new Java223Exception("Cannot");
         }
-        ReuseScriptInstance reuseAnnotation = compiledClass.getAnnotation(ReuseScriptInstance.class);
-        if (reuseAnnotation != null) {
-            instanceReuse = reuseAnnotation.value();
-        }
-
         // if allowed, get from cache and return
         var alreadyExistingScriptInstance = compiledScript.getCompiledInstance();
-        if (instanceReuse && alreadyExistingScriptInstance != null) {
+        if (allowInstanceReuseDefaultProperty && alreadyExistingScriptInstance != null) {
             return alreadyExistingScriptInstance;
         }
 

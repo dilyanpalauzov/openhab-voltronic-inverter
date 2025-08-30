@@ -224,8 +224,6 @@ The Java223 automation bundle has an option `allowInstanceReuse`. If set to true
 Of course, for this to work, your script has to be re-executed. So, script files in the `automation/jsr223` directory **CANNOT** use this functionality, as they are only executed ONCE by nature, when OpenHAB starts, or when they are created or modified (which is another way of saying deleted/recreated).
 **BUT**, you should also note that Rule inner working is different: your rule code is some kind of lambda, and so is always executed on the same instance. It means you can share information here between rules (as a field).
 
-You can also overwrite this default behavior for individual script by using the `@ReuseScriptInstance` annotation on the class level.
-
 Take note that it uses the compilation cache. So if your cache is not big enough (50 scripts by default), persistence of your fields values is not assured.
 
 
