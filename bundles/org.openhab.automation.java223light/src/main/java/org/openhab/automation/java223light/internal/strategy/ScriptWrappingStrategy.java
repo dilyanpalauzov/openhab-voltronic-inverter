@@ -56,6 +56,7 @@ public class ScriptWrappingStrategy implements ScriptInterceptorStrategy {
 
 
             public class WrappedJavaScript {
+                Object input;
                 public Object main() {
             """;
 
