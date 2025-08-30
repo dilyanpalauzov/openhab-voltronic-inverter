@@ -16,6 +16,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,18 +63,17 @@ public class Java223ScriptEngine extends JavaScriptEngine implements Invocable {
     private final Java223Strategy java223Strategy;
     private final PackageResourceListingStrategy osgiPackageResourceListingStrategy;
     private final ScriptInterceptorStrategy scriptInterceptorStrategy;
-    private final List<String> compilationOptions;
+    private final List<String> compilationOptions = Arrays.asList("-g", "-parameters");
     private final NameStrategy nameStrategy = new DefaultNameStrategy();
 
     public Java223ScriptEngine(Java223CompiledScriptCache compiledScriptCache, Java223Strategy java223Strategy,
             PackageResourceListingStrategy osgiPackageResourceListingStrategy,
-            ScriptInterceptorStrategy scriptInterceptorStrategy, List<String> compilationOptions) {
+            ScriptInterceptorStrategy scriptInterceptorStrategy) {
         super();
         this.cache = compiledScriptCache;
         this.java223Strategy = java223Strategy;
         this.osgiPackageResourceListingStrategy = osgiPackageResourceListingStrategy;
         this.scriptInterceptorStrategy = scriptInterceptorStrategy;
-        this.compilationOptions = compilationOptions;
     }
 
     /**

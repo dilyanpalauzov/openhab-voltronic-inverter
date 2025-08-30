@@ -150,7 +150,7 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory implemen
     public @Nullable ScriptEngine createScriptEngine(String scriptType) {
         if (getScriptTypes().contains(scriptType)) {
             return new Java223ScriptEngine(compiledScriptCache, java223Strategy, osgiPackageResourceListingStrategy,
-                    scriptWrappingStrategy, Arrays.asList("-g", "-parameters"));
+                    scriptWrappingStrategy);
         }
         return null;
     }
