@@ -15,6 +15,7 @@
   <name>openHAB Add-ons :: Bundles</name>
 
   <modules>
+    <module>org.openhab.minimal</module>
     <!-- automation -->
     <module>org.openhab.automation.groovyscripting</module>
     <module>org.openhab.automation.jrubyscripting</module>
