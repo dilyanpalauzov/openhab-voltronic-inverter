@@ -200,7 +200,7 @@ public class Java223Strategy
     public void processWatchEvent(WatchService.Kind kind, Path pathEvent) {
         Path fullPath = LIB_DIR.resolve(pathEvent);
 
-        // All new .java files will be kept in memory
+        // All new .java file will be kept in memory
         if (fullPath.getFileName().toString().endsWith("." + Java223Constants.JAVA_FILE_TYPE)) {
             switch (kind) {
                 case CREATE:
