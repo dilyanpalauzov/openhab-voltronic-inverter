@@ -81,6 +81,7 @@ public class Java223ScriptEngine extends JavaScriptEngine implements Invocable {
             if (originalScript == null) {
                 throw new ScriptException("script cannot be null");
             }
+            logger.warn("compile: script[{}]", originalScript);
             // add a wrapper if needed
             String script = scriptInterceptorStrategy.intercept(originalScript);
 
@@ -131,9 +132,11 @@ public class Java223ScriptEngine extends JavaScriptEngine implements Invocable {
                 lastCompiledScript = compiledScriptResult;
                 return compiledScriptResult;
             } catch (ClassNotFoundException e) {
+                logger.warn("AAB ScriptException: [cause={}, exception={}]", e.getCause(), e.getException());
                 throw new ScriptException(e);
             }
         } catch (NoClassDefFoundError e) {
+            logger.warn("AAC ScriptException NoClassDefFoundError: [{}]", e.getMessage());
             throw new ScriptException("NoClassDefFoundError: " + e.getMessage());
         }
     }
