@@ -15,12 +15,6 @@
   <name>openHAB Add-ons :: Bundles :: Automation :: Java Scripting</name>
 
   <dependencies>
-    <dependency>
-      <groupId>org.freemarker</groupId>
-      <artifactId>freemarker</artifactId>
-      <version>2.3.32</version>
-      <scope>compile</scope>
-    </dependency>
     <!-- jdt annotation classes are included because we want to be able to
       export them to the dependency jar -->
     <dependency>
@@ -50,7 +44,32 @@
       </resource>
     </resources>
     <plugins>
-
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <artifactItems>
+            <artifactItem>
+              <groupId>org.freemarker</groupId>
+              <artifactId>freemarker</artifactId>
+              <version>2.3.32</version>
+              <type>jar</type>
+              <overWrite>false</overWrite>
+              <outputDirectory>${project.build.directory}/classes</outputDirectory>
+              <excludes>freemarker/ext/ant/**</excludes>
+              <!--                   <destFileName>optional-new-name.jar</destFileName>
+                   <includes>**/*.class,**/*.xml</includes> -->
+            </artifactItem>
+          </artifactItems>
+          <!--
+              <includes>**/*.class</includes>
+              <excludes>**/*.properties</excludes>
+              <outputDirectory>${project.build.directory}/alternateLocation</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots> -->
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
