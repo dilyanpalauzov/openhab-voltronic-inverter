@@ -84,7 +84,7 @@
                 <exclude>freemarker/ext/jython/**</exclude>
                 <exclude>freemarker/ext/servlet/**</exclude>
                 <exclude>freemarker/ext/jsp/**</exclude>
-                <exclude>freemarker/ext/dom/**</exclude>
+                <exclude>freemarker/ext/dom/**</exclude> <!-- how about excluding also ext/jdom/** -->
                 <exclude>freemarker/ext/xml/**</exclude>
                 <exclude>helper/**</exclude>
               </excludes>
