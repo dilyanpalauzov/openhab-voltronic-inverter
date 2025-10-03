@@ -781,6 +781,7 @@ public class DisableThing extends helper.generated.Java223Script {
 The metadataRegistry is not a standard JSR223 variable, but the Java223 automation bundle can nonetheless inject it.
 For example, this script overwrites Google Assistant metadata every time it is executed (so, at each openHAB startup), effectively keeping this file as some kind of external 'database' where you can store all your metadata.
 
+
 ```java 
 import org.openhab.core.items.MetadataRegistry;
 import org.openhab.core.items.MetadataKey;
