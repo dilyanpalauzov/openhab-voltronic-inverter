@@ -1,4 +1,6 @@
 package ch.obermuhlner.scriptengine.java;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 import ch.obermuhlner.scriptengine.java.bindings.BindingStrategy;
 import ch.obermuhlner.scriptengine.java.compilation.CompilationStrategy;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
  * Script engine to compile and run a Java class on the fly.
  */
 public class JavaScriptEngine implements ScriptEngine, Compilable {
+    //    private final Logger logger = LoggerFactory.getLogger(JavaScriptEngine.class);
 
     private NameStrategy nameStrategy = new DefaultNameStrategy();
     private ConstructorStrategy constructorStrategy = DefaultConstructorStrategy.byDefaultConstructor();
@@ -118,6 +121,7 @@ public class JavaScriptEngine implements ScriptEngine, Compilable {
 
     @Override
     public void setContext(ScriptContext context) {
+	//	logger.error("JavaScriptEngine.setContext()");
         Objects.requireNonNull(context);
         this.context = context;
     }
@@ -134,11 +138,13 @@ public class JavaScriptEngine implements ScriptEngine, Compilable {
 
     @Override
     public void setBindings(Bindings bindings, int scope) {
+	//	logger.error("JavaScriptEngine.setBindings()");
         context.setBindings(bindings, scope);
     }
 
     @Override
     public void put(String key, Object value) {
+	//	logger.error("JavaScriptEngine.put " + key + " : " + value);
         getBindings(ScriptContext.ENGINE_SCOPE).put(key, value);
     }
 
