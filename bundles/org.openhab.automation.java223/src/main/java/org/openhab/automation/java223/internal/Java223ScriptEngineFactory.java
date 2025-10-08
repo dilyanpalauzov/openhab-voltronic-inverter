@@ -262,8 +262,6 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory
     @Override
     public void scopeValues(ScriptEngine scriptEngine, Map<String, Object> scopeValues) {
         for (Entry<String, Object> entry : scopeValues.entrySet()) {
-            logger.error("Java223ScriptEngineFactory.scopeValues: put" + entry.getKey() + " : "
-                    + entry.getValue().toString());
             scriptEngine.put(entry.getKey(), entry.getValue());
         }
     }
@@ -278,12 +276,8 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory
     }
 
     @Override
-    public ScriptEngine getScriptEngine() {
-        ScriptEngine scriptEngine = createScriptEngine(Java223Constants.JAVA_FILE_TYPE);
-        if (scriptEngine == null) {
-            throw new Java223Exception("Null script engine returned. Should not happened");
-        }
-        return scriptEngine;
+    public @Nullable ScriptEngine getScriptEngine() {
+        return createScriptEngine(Java223Constants.JAVA_FILE_TYPE);
     }
 
     /**
