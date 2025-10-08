@@ -155,6 +155,8 @@ public class InjectedCodeGenerator {
                     // Class is in the default package, no import statement needed.
                     return null;
                 }
+                // Class is in the default package, no import statement needed.
+                return null;
             }
             case Enum<?> enumMember -> {
                 String memberName = enumMember.name();
@@ -171,16 +173,16 @@ public class InjectedCodeGenerator {
                     return bindingsParsingResult;
                 }
                 Class<?>[] interfaces = value.getClass().getInterfaces();
-                if (interfaces.length == 0) { // directly import class name
-                    return getImportAndDeclaration(key, value.getClass());
-                } else if (interfaces.length == 1) {
-                    return getImportAndDeclaration(key, interfaces[0]);
-                } else {
-                    logger.warn(
-                            "Cannot find an appropriate interface for declaring the injected field {} : {}. We pick the first one",
-                            key, value.getClass());
-                    return getImportAndDeclaration(key, interfaces[0]);
-                }
+                return switch (interfaces.length) {
+                    case 0 -> getImportAndDeclaration(key, value.getClass()); // directly import class name
+                    case 1 -> getImportAndDeclaration(key, interfaces[0]);
+                    default -> {
+                        logger.warn(
+                                "Cannot find an appropriate interface for declaring the injected field {} : {}. We pick the first one",
+                                key, value.getClass());
+                        yield getImportAndDeclaration(key, interfaces[0]);
+                    }
+                };
             }
         }
     }
