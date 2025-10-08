@@ -427,7 +427,7 @@ public class WrappedJavaScript extends Java223Script {
      * Use this method to manually inject binding value in an object of your choice.
      */
     public void injectBindings(Object objectToInjectInto) {
-        BindingInjector.injectBindingsInto(this.getClass().getClassLoader(), bindings, objectToInjectInto);
+        BindingInjector.injectBindingsInto(getClass().getClassLoader(), bindings, objectToInjectInto);
     }
 
     /**
@@ -909,4 +909,35 @@ public class ActionExample extends Java223Script { // <-- take the Java223Script
         _actions.getSmsmodem_SMSModemActions(Things.mySMSthing).sendSMS("+3312345678", "Hello world");
     }
 }
+```
+KNOWN PROBLEMS
+* why classes under automation/jsr223 have to be public?
+* why no-parameter constructor of a automation/jsr223/.java class is not executed (but the class is anyway constructed)?
+* eventinfo objects cannot be used in UI-based rules - https://github.com/dalgwen/openhab-addons/pull/21#discussion_r2412112765 - or it can? https://github.com/dalgwen/openhab-addons/pull/17#issuecomment-3386087395
+* What is the point of doing `import static org.openhab.core.library.types.OnOffType.ON;` and `import java.time.ZonedDateTime;` in helper/generated/Java223Script.java, if Java223Script.java does not use `ON` and `ZonedDateTime`? - https://github.com/dalgwen/openhab-addons/pull/23 - answer no point, should be removed
+* @InjectBinding should not be applied to variables, which already have a value, or a final. https://github.com/dalgwen/openhab-addons/pull/23#issuecomment-3384307824
+* What means "the injection will fail"?  Runtime error - program abort, or nothing happens - the value is null.
+* "- If you want all the triggering event input parameters in a map for a rule, you can use the parameter `Map<String, ?> bindings` in the rule method.`."  What happens if I use `ItemStateUpdate bindings`?
+* class ItemStateChange: ` @InjectBinding(mandatory = false) protected @Nullable ZonedDateTime lastStateChange;` when this cannnot be attached? - https://github.com/dalgwen/openhab-addons/pull/25
+* when shutting down openhab, Java223 puts in openhab.log:
+```
+2025-10-09 11:50:33.846 [INFO ] [el.core.internal.ModelRepositoryImpl] - Unloading DSL model 'r3.items'
+2025-10-09 11:50:40.142 [DEBUG] [ernal.codegeneration.SourceGenerator] - Generating actions
+2025-10-09 11:50:40.143 [WARN ] [ernal.codegeneration.SourceGenerator] - Cannot create helper class file in library directory
+java.io.IOException: Cannot generate Actions
+        at org.openhab.automation.java223.internal.codegeneration.SourceGenerator$InternalGenerator.generate(SourceGenerator.java:457) ~[?:?]
+        at org.openhab.automation.java223.internal.codegeneration.SourceGenerator.lambda$3(SourceGenerator.java:159) ~[?:?]
+        at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572) ~[?:?]
+        at java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[?:?]
+        at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:304) ~[?:?]
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[?:?]
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[?:?]
+        at java.lang.Thread.run(Thread.java:1583) [?:?]
+Caused by: java.lang.IllegalStateException: BundleContext is no longer valid org.openhab.automation.java223_5.0.1 [249]
+        at org.eclipse.osgi.internal.framework.BundleContextImpl.checkValid(BundleContextImpl.java:1031) ~[org.eclipse.osgi-3.18.0.jar:?]
+        at org.eclipse.osgi.internal.framework.BundleContextImpl.getServiceReferences(BundleContextImpl.java:567) ~[org.eclipse.osgi-3.18.0.jar:?]
+        at org.eclipse.osgi.internal.framework.BundleContextImpl.getServiceReferences(BundleContextImpl.java:1068) ~[org.eclipse.osgi-3.18.0.jar:?]
+        at org.openhab.automation.java223.internal.codegeneration.SourceGenerator.internalGenerateActions(SourceGenerator.java:214) ~[?:?]
+        at org.openhab.automation.java223.internal.codegeneration.SourceGenerator$InternalGenerator.generate(SourceGenerator.java:453) ~[?:?]
+        ... 7 more
 ```
