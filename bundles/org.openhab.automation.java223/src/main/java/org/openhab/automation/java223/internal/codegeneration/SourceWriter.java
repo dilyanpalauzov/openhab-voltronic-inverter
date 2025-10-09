@@ -107,9 +107,8 @@ public class SourceWriter {
         String packageFolder = packageName.replace('.', File.separatorChar);
         if (className != null && !className.isEmpty()) {
             return folder.resolve(packageFolder + File.separator + className + "." + Java223Constants.JAVA_FILE_TYPE);
-        } else {
-            return folder.resolve(packageFolder);
         }
+        return folder.resolve(packageFolder);
     }
 
     protected boolean sourceHasChangeOrIsNew(String packageName, String className, String newSource) {
