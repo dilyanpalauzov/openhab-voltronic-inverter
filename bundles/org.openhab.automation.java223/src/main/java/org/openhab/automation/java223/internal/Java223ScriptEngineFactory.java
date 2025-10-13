@@ -262,6 +262,8 @@ public class Java223ScriptEngineFactory extends JavaScriptEngineFactory
     @Override
     public void scopeValues(ScriptEngine scriptEngine, Map<String, Object> scopeValues) {
         for (Entry<String, Object> entry : scopeValues.entrySet()) {
+            logger.error("scopeValues.put [" + entry.getKey() + "] -> " + entry.getValue() + " of type "
+                    + entry.getValue().getClass());
             scriptEngine.put(entry.getKey(), entry.getValue());
         }
     }
