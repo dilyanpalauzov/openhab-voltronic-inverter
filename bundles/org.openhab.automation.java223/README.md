@@ -98,6 +98,12 @@ You can control the injection further (i.e. overriding default behavior, or dire
 | mandatory               | If set to true (which is the default when adding @InjectBinding) and the variable is not found, then the injection will fail, you will see an error log, and the script won't execute. You should use when you want to "fail fast".                                                                                                     |
 | recursive               | For library only. If set to true (default), the library injected will be parsed and its field also injected.                                                                                                                                                                                                                               |
 
+
+As `itemRegistry` is offered by both `default` and `provider` presets, when deriving from the Java223Script class in order to use the `itemRegistry` from the `provider` preset, the `named` parameter must be used.
+```java
+    @InjectBinding(named="itemRegistry", preset="provider") org.openhab.core.automation.module.script.providers.support.shared.ProviderItemRegistryDelegate itemRegistryDelegate;
+```
+
 <a id="rules"></a>
 
 ### Additional injections
