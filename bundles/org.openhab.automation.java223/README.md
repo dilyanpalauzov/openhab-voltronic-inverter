@@ -72,7 +72,7 @@ But there are dedicated features for this ([shared cache](#sharedcache) for shar
 ## Variable injection
 
 Of course, a script needs to communicate with openHAB to be useful.
-We will call 'openHAB inputs' those objects, values, references, that openHAB gives to expose to your script.
+We will call 'openHAB inputs' those objects, values, references, that openHAB exposes to your script.
 For example, a reference to the item registry will allow a script to interact with items by checking their state or giving them command.
 
 With this Java223 bundle, it is done by the way of automatic injection.
@@ -458,7 +458,7 @@ This is useful for Transformation.
 
 ## Transformation
 
-You can use a Java223 script in transformations.
+You can use a Java223 script in [transformations](https://www.openhab.org/docs/configuration/transformations.html).
 A transformation is a piece of code with an input and an output.
 To do so, you only have to respect this contract:
 
