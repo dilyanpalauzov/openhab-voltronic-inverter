@@ -930,3 +930,4 @@ are not useful in statically compiled languages. It exists to call importPresets
 ------------------
 * It would be good, if scriptEngine.getContext().setWriter() and `.setErrorWriter()` are implemented, so from within .java files can be used `System.out.println()` and `System.err.println()`.  Openhab-JS has implemented the usual `console.log()` command, so that it can be used in .js files, cf. https://github.com/openhab/openhab-js?tab=readme-ov-file#console, the console object is defined in bundles/org.openhab.automation.jsscripting main >$ ls src/main/resources/node_modules/@jsscripting-globals.js.  Better would be in scriptEngine.getContext().setWriter() and .setErrorWriter() are implemented in openhab-core, so that all scripting engines can benefit from it.
 -------------
+automation/lib/java/helper-lib.jar contains both .java and .class files.  Do the `.java` files need to be included? (.class files 62kb, .java files 70kb).
