@@ -151,9 +151,6 @@ public class InjectedCodeGenerator {
                 if (packageName != null && !packageName.isEmpty()) {
                     return new BindingsParsingResult("import " + canonicalName + ";", null,
                             ImportIsFor.WRAPPER_CLASS_ONLY, null, null);
-                } else {
-                    // Class is in the default package, no import statement needed.
-                    return null;
                 }
                 // Class is in the default package, no import statement needed.
                 return null;
