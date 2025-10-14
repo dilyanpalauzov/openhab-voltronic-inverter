@@ -931,3 +931,74 @@ are not useful in statically compiled languages. It exists to call importPresets
 * It would be good, if scriptEngine.getContext().setWriter() and `.setErrorWriter()` are implemented, so from within .java files can be used `System.out.println()` and `System.err.println()`.  Openhab-JS has implemented the usual `console.log()` command, so that it can be used in .js files, cf. https://github.com/openhab/openhab-js?tab=readme-ov-file#console, the console object is defined in bundles/org.openhab.automation.jsscripting main >$ ls src/main/resources/node_modules/@jsscripting-globals.js.  Better would be in scriptEngine.getContext().setWriter() and .setErrorWriter() are implemented in openhab-core, so that all scripting engines can benefit from it.
 -------------
 automation/lib/java/helper-lib.jar contains both .java and .class files.  Do the `.java` files need to be included? (.class files 62kb, .java files 70kb).
+------------
+(from https://github.com/dalgwen/openhab-addons/pull/30)
+Without the change in bnd.bnd
+```java
+@InjectBinding(named="itemRegistry", preset="provider") org.openhab.core.automation.module.script.providersupport.shared.ProviderItemRegistryDelegate itemRegistryDelegate
+```
+emits
+```
+error: package org.openhab.core.automation.module.script.providersupport.shared does not exist
+    @InjectBinding(named="itemRegistry", preset="provider") org.openhab.core.automation.module.script.providersupport.shared.ProviderItemRegistryDelegate itemRegistryDelegate;
+                                                                                                                            ^
+```
+With the change in bnd.bnd:
+```java
+public class Test  {
+    @org.openhab.automation.java223.common.InjectBinding(preset="provider")
+    org.openhab.core.automation.module.script.providersupport.shared.ProviderItemRegistryDelegate itemRegistry;
+    public Object main() {
+        itemRegistry.add(new org.openhab.core.library.items.StringItem("f2"));
+        return null;
+    }
+}
+```
+produces:
+```
+error: cannot access org.openhab.core.automation.module.script.providersupport.internal.ProviderRegistry
+        itemRegistryDelegate.add(new org.openhab.core.library.items.StringItem("f2"));
+                            ^
+  class file for org.openhab.core.automation.module.script.providersupport.internal.ProviderRegistry not found
+```
+Actually I wanted to write in README
+```
+As `itemRegistry` is offered by both `default` and `provider` presets, when deriving from the Java223Script class in order to use the `itemRegistry` from the `provider` preset, the `named` parameter must be used.
+>     @InjectBinding(named="itemRegistry", preset="provider") org.openhab.core.automation.module.script.providersupport.shared.ProviderItemRegistryDelegate itemRegistryDelegate;
+```
+but both
+```java
+public class Test extends helper.generated.Java223Script {
+    @org.openhab.automation.java223.common.InjectBinding(preset="provider")
+    org.openhab.core.automation.module.script.providersupport.shared.ProviderItemRegistryDelegate itemRegistry;
+    public Object main() { return null; }
+}
+```
+and
+```java
+public class Test extends helper.generated.Java223Script {
+    @org.openhab.automation.java223.common.InjectBinding(named="itemRegistry", preset="provider")
+    org.openhab.core.automation.module.script.providersupport.shared.ProviderItemRegistryDelegate itemRegistryDelegate;
+    public Object main() { return null; }
+}
+```
+print
+```
+2025-10-14 11:25:02.131 [INFO ] [ort.loader.AbstractScriptFileWatcher] - (Re-)Loading script '/etc/openhab/automation/jsr223/test.java'
+2025-10-14 11:25:02.434 [TRACE] [ation.java223.common.BindingInjector] - Didn't find an element with the key input. Ignoring
+```
+while removing `extends helper.generated.Java223Script` works:
+
+```java
+public class Test {
+    @org.openhab.automation.java223.common.InjectBinding(named="itemRegistry", preset="provider") org.openhab.core.automation.module.script.providersupport.shared.ProviderItemRegistryDelegate itemRegistryDelegate;
+    public Object main() { return null; }
+}
+```
+“works” means leads to “class file for org.openhab.core.automation.module.script.providersupport.internal.ProviderRegistry not found” if I try to use itemRegistyDelegate, and not to „Didn't find an element with the key input. Ignoring“.
+
+So:
+* provider preset does not work from Java223
+* `InjectBinding(named="itemRegistry", preset="provider") ProviderItemRegistryDelegate itemRegistryDelegate;` stops working for `extends helper.generated.Java223Script`.
+* “[ation.java223.common.BindingInjector] - Didn't find an element with the key input. Ignoring” shold spell the name, instead of `input`.
+---------
