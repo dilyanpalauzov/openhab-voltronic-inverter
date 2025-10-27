@@ -15,13 +15,11 @@
   <name>openHAB Add-ons :: Bundles</name>
 
   <modules>
-    <module>org.openhab.minimal</module>
     <!-- automation -->
     <module>org.openhab.automation.groovyscripting</module>
     <module>org.openhab.automation.jrubyscripting</module>
     <module>org.openhab.automation.jsscripting</module>
     <module>org.openhab.automation.jsscriptingnashorn</module>
-    <module>org.openhab.automation.java223light</module>
     <module>org.openhab.automation.jythonscripting</module>
     <module>org.openhab.automation.pidcontroller</module>
     <module>org.openhab.automation.pwm</module>
@@ -264,7 +262,6 @@
     <module>org.openhab.binding.millheat</module>
     <module>org.openhab.binding.milight</module>
     <module>org.openhab.binding.minecraft</module>
-    <module>org.openhab.binding.mini2</module>
     <module>org.openhab.binding.modbus</module>
     <module>org.openhab.binding.modbus.e3dc</module>
     <module>org.openhab.binding.modbus.kermi</module>
