@@ -9,49 +9,51 @@ When one end of an USB-B cable is connected in the Voltronic inverter and the ot
 This binding is tested and can be configured only with such /dev/hidraw devices.
 Creating a `/etc/udev/rules.d/hidraw.rules` file with content `SUBSYSTEM=="hidraw", ATTRS{idVendor}=="0665", ATTRS{idProduct}=="5161", GROUP="dialout"` ensures that members of the dialout group, to which the openhab user belongs, have sufficient access to communicate.
 
-For the communication to work, the nrjavaserial library needs to be patched to deal with /dev/hidraw devices, by appling the changes from https://github.com/dilyanpalauzov/nrjavaserial/commits/master/.
+For the communication to work, the nrjavaserial library needs to be patched to deal with /dev/hidraw devices, by applying the changes from https://github.com/dilyanpalauzov/nrjavaserial/commits/master/.
 The release https://github.com/dilyanpalauzov/nrjavaserial/releases/tag/5.2.1-hidraw does include these changes.
 To install the modified nrjavaserial-5.2.1.jar, stop openhab, clean the openHAB cache, replace the file /usr/share/openhab/runtime/system/com/neuronrobotics/nrjavaserial/5.2.1.OH1/nrjavaserial-5.2.1.OH1.jar and finally start openHAB.
 
 ## Operating mode
 
-The thing polls periodically information from the device, using the QMOD, QPIWS and QPIGS command, and pushes data to the channel groups with the same name.  For the operating of the binding it is irrelevant whether items are bound to channels.
+The thing periodically polls information from the device, using the QMOD, QPIWS and QPIGS command, and pushes data to the channel groups with the same name.  For the operation of the binding it is irrelevant whether items are bound to channels.
 
-When the thing goes online, it sends the QID, QSID, QVFW, QMN, QVFW2, QVFW3, QPI, VERFW, QWFS, QBOOT and QGMN commands.  From their answers the thing properties are build.
+When the thing goes online, it sends the QID, QSID, QVFW, QMN, QVFW2, QVFW3, QPI, VERFW, QWFS, QBOOT and QGMN commands.  From their answers the thing properties are built.
 
-If QSID returns the same serial number as QID, but after the annouced length there are non-zeroes, these are added as device property “Serial Number” after a bullet.
+If QSID returns the same serial number as QID, but after the announced length there are non-zeroes, these are added as device property “Serial Number” after a bullet.
 Then the 14-digit serial number returned by QID is the text before the bullet.
+![Device Properties shown under Settings -> Things](doc/properties.png)
 
 The QPIRI and QFLAG commands, which provide data for the channel groups with the same name, are also executed when the device goes online.
-Changing a setting using device’s buttons does not transfer the new state to openHAB.
-If a setting is changed over a channel in the QPIRI or QFLAG channel groups, then QPIRI and QFLAG are executed and the statuses are transfered to openHAB.
+Changing a setting using the device’s buttons does not transfer the new state to openHAB.
+If a setting is changed over a channel in the QPIRI or QFLAG channel groups, then QPIRI and QFLAG are executed and the statuses are transferred to openHAB.
 That is, after making a change using the buttons on the device, it is sufficient to toggle the backlight from openHAB to transfer the new settings to openHAB.
 
-Sometimes on supported commands the inverter returns NAK.  When this binding receives NAK, it sends the command again. If it receives then NAK it sends the command one last time.
+Sometimes on supported commands the inverter returns NAK.  When this binding receives NAK, timeout or wrong CRC, it sends the command again. If it receives NAK, timeout or wrong CRC again it sends the command one last time.
 
 ## What does not work
 
 * Parallel mode - querying several devices using one connection
-* Displaying static properties - returned by QPIRI - as thing properties, without linking them to channels
 * Not tested are all other kinds of connections - RS232, Bluetooth, Wi-Fi.
 In fact no openHAB thing can be created for these.
-* Firmware update
 * All battery equalization stuff
 * Detecting which commands the inverter supports and in turn convert some channels from read-only to read-write.
-Currently the only changes via channels are made by the PD/PE, PCP00, PCP01, POP00 and POP01 commands, as only these are supported by the invertor of the author of this binding.
+Currently the only changes via channels are made by the PD/PE, PCP00, PCP01, POP00 and POP01 commands, as only these are supported by the inverter of the author of this binding.
 However, as can be seen at the end of the current file, there is an action to send arbitrary commands to the inverter.
 * Discovery of devices
 
 ### Known troubles
 
-For the serial communication to work either under Settings → Add-On Management → USB Suggestion Finder must be enabled, or an add-on from the distrubiton, which utilizes serial communication, must be installed.
+For the serial communication to work either under Settings → Add-On Management → USB Suggestion Finder must be enabled, or an add-on from the distribution, which utilizes serial communication, must be installed.
 
 ## Policy for accepting patches
 
-Patches, adding new channels or converting a read-only channel to write-channel by sending a command, should first detect, if the feature is available by the connected inverter, and not offer it for all inverters.
+Patches, adding new channels or converting a read-only channel to write-channel by sending a command, should first detect if the feature is available by the connected inverter, and not offer it for all inverters.
 
+## Supported Things
 
-## `Voltronic Inverter` Thing Configuration
+`inverter`: This binding supports one thing type: Voltronic inverter.
+
+## Thing Configuration
 
 | Name            | Type    | Description                                 | Default | Required |
 |-----------------|---------|---------------------------------------------|---------|----------|
@@ -60,7 +62,7 @@ Patches, adding new channels or converting a read-only channel to write-channel 
 
 Example configuration file
 ```
-voltronic:inverter:f [port="/dev/hidraw0", refreshInterval="2000"]
+Thing voltronic:inverter:f [port="/dev/hidraw0", refreshInterval="2000"]
 ```
 
 ## Channels
@@ -71,9 +73,9 @@ The provided channels are grouped, based on the command which provides data for 
 
 The current binding has disabled generating a predicted state, when a command changing a setting (PE, PD, POP and PCP) is sent to the inverter over a channel.
 After sending the command, the binding queues the current state with the QFLAG and QPIRI commands and updates the channels with the new state.
-If the inverter rejects (ignores, vetos) the command, the initial state of the item does not change.
+If the inverter rejects (ignores, vetoes) the command, the initial state of the item does not change.
 [BasicUI](https://github.com/openhab/openhab-webui/issues/3456) and [openHAB-Android with sitemaps](https://github.com/openhab/openhab-android/issues/3947) in such case show the state, which the user modified to, not the state, returned by the inverter.
-Having `autoupdate="true"` below is necessary when using BasicUI or openHAB-Android with sitemaps, so that the item changes to the new state and then returns to the old one, when the inverter might rejects the command.
+Having `autoupdate="true"` below is necessary when using BasicUI or openHAB-Android with sitemaps, so that the item changes to the new state and then returns to the old one, when the inverter might reject the command.
 Enabling Power Saving (PEj) is an example for a command, which inverters may ignore.
 
 ### The Channels
@@ -106,7 +108,7 @@ Read-only means that the value may or may not be modifiable on the device or by 
 | qpigs#chargingMode              | String                   | R |                          |
 | qpigs#loadStatus                | Switch                   | R |                          |
 | qpigs#batteryVoltageToSteady    | Switch                   | R |                          |
-| qflag#mute                      | Switch                   | W | Buzzer enabled/disabled  |
+| qflag#mute                      | Switch                   | W | Buzzer disabled/enabled  |
 | qflag#overloadBypass            | Switch                   | W | Menu item 18             |
 | qflag#powerSaving               | Switch                   | W | Menu item 04             |
 | qflag#lcdReturn                 | Switch                   | W | Menu item 19             |
@@ -146,12 +148,12 @@ Read-only means that the value may or may not be modifiable on the device or by 
 ### Thing Configuration
 
 ```java
-voltronic:inverter:f [port="/dev/hidraw0", refreshInterval="1"]
+Thing voltronic:inverter:f [port="/dev/hidraw0"]
 ```
 
 ### Item Configuration
 
-### Tags in .items file definitions
+#### Tags in .items file definitions
 
 Since openHAB 5.1 when services/runtime.cfg:org.openhab.ItemChannelLinkRegistry:useTags=true is set, tags are inherited from the binding and the text between [], when not applied to a Group (first two lines below), can be skipped.  Since openHAB 5.1 the quotes around Switch can be skipped.
 
@@ -159,10 +161,10 @@ The tags Calculation, Mode and Info are recognized since openHAB 5.0.
 Use Calculation instead of Measurement for qpigs#inputPower, when the display does not show and the device does not transmit the power from PV.
 In this case inputPower is calculated as the product of qpigs#inputCurrent and qpigs#sccVoltage.
 
-#### Sample Items Configuration
+### Sample Items Configuration
 
 ```java
-// autoupdate="true" is only needed in sitemaps, in the case when the device rejects a change
+// autoupdate="true" is only needed for sitemaps and only in the case when the device can reject a change
 
 Group gInverter1 [Inverter]
 Group gBattery1 (gInverter1) [Battery]
@@ -174,11 +176,11 @@ String Faults <alarm> (gInverter1) [Alarm, Info] { channel="voltronic:inverter:f
 Switch Mute <soundvolume_mute> (gInverter1) ["Switch", SoundVolume] { channel="voltronic:inverter:f:qflag#mute", autoupdate="true" }
 Switch OverloadBypass (gInverter1) ["Switch", Mode] { channel="voltronic:inverter:f:qflag#overloadBypass", autoupdate="true" }
 Switch PowerSaving (gInverter1) ["Switch", Mode] { channel="voltronic:inverter:f:qflag#powerSaving", autoupdate="true" }
-Switch LCDReturn (gInverter1) ["Switch", Mode] { channel="voltronic:inverter:f:qflag#lcdReturn", autoupdate="true" }
+Switch LCDReturn "Return to start screen after one minute inactivity" (gInverter1) ["Switch", Mode] { channel="voltronic:inverter:f:qflag#lcdReturn", autoupdate="true" }
 Switch OverloadRestart (gInverter1) ["Switch", Mode] { channel="voltronic:inverter:f:qflag#overloadRestart", autoupdate="true" }
 Switch OvertemperatureRestart (gInverter1) ["Switch", Mode] { channel="voltronic:inverter:f:qflag#overtemperatureRestart", autoupdate="true" }
 Switch Backlight <light> (gInverter1) ["Switch", Light] { channel="voltronic:inverter:f:qflag#backlight", autoupdate="true" }
-Switch Alarm (gInverter1)  ["Switch", Mode] { channel="voltronic:inverter:f:qflag#alarm", autoupdate="true" }
+Switch Alarm "Alarm on primary source interrupt" (gInverter1) ["Switch", Mode] { channel="voltronic:inverter:f:qflag#alarm", autoupdate="true" }
 Switch FaultCode (gInverter1)  ["Switch", Mode] { channel="voltronic:inverter:f:qflag#faultCode", autoupdate="true" }
 
 Number:ElectricPotential GridVoltage (gInverter1) [Measurement, Voltage] { channel="voltronic:inverter:f:qpigs#gridVoltage" }
@@ -300,6 +302,10 @@ sitemap i1 label="i1" {
   }
 } 
 ```
+![How the sitemap looks like](doc/sitemap.png)
+
+Output source priority and Charger source priority values can be set from the sitemap:
+![Dialogue for setting output source priority](doc/outputsourcepri.png)
 
 ## Actions
 
