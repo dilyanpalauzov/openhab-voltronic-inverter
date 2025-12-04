@@ -21,8 +21,6 @@ import org.openhab.core.thing.ThingStatusDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gnu.io.NoSuchPortException;
-
 @NonNullByDefault
 class Serial extends Base implements Closeable {
     private @Nullable SerialPort device;
@@ -38,8 +36,7 @@ class Serial extends Base implements Closeable {
         this.serialPortManager = serialPortManager;
     }
 
-    private void instantiate(final SerialPortIdentifier id)
-            throws NoSuchPortException, PortInUseException, IOException {
+    private void instantiate(final SerialPortIdentifier id) throws PortInUseException, IOException {
         logger.trace("instantiate 1 {}", port);
         device = id.open(Serial.class.getSimpleName(), 1000); // calls nativeavailable
         logger.trace("instantiate 2 {}", port);
@@ -94,11 +91,6 @@ class Serial extends Base implements Closeable {
         isOnline = true;
         try {
             instantiate(portId);
-        } catch (NoSuchPortException e) {
-            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.COMMUNICATION_ERROR, "No such port " + port);
-            logger.error("No such port {}, going offline", port);
-            goOffline();
-            return;
         } catch (PortInUseException e) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.COMMUNICATION_ERROR,
                     "Port " + port + " is in use");
