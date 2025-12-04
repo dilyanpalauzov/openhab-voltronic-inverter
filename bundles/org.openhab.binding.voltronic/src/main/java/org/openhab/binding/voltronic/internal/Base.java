@@ -39,6 +39,7 @@ import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingStatus;
 import org.openhab.core.thing.ThingStatusDetail;
 import org.openhab.core.thing.binding.BaseThingHandler;
+import org.openhab.core.thing.binding.ThingHandlerCallback;
 import org.openhab.core.thing.binding.ThingHandlerService;
 import org.openhab.core.types.RefreshType;
 import org.openhab.core.types.UnDefType;
@@ -197,7 +198,7 @@ abstract class Base extends BaseThingHandler implements Runnable {
                                 f.accept("z");
                                 return;
                             default:
-                                logger.error("Unknown channel", channelUID.getId());
+                                logger.error("Unknown channel {}", channelUID.getId());
                                 return;
 
                         }
@@ -385,8 +386,10 @@ abstract class Base extends BaseThingHandler implements Runnable {
         if (propertiesUpdated) {
             thing.setProperties(properties);
             synchronized (this) {
-                if (getCallback() != null) {
-                    getCallback().thingUpdated(thing);
+                @Nullable
+                ThingHandlerCallback cb = getCallback();
+                if (cb != null) {
+                    cb.thingUpdated(thing);
                 } else {
                     logger.warn(
                             "Handler {} tried updating its thing's properties although the handler was already disposed.",
@@ -402,8 +405,10 @@ abstract class Base extends BaseThingHandler implements Runnable {
     protected void unsetChannelsAndProperties() {
         thing.setProperties(Map.of());
         synchronized (this) {
-            if (getCallback() != null) {
-                getCallback().thingUpdated(thing);
+            @Nullable
+            ThingHandlerCallback cb = getCallback();
+            if (cb != null) {
+                cb.thingUpdated(thing);
             }
         }
         thing.getChannels().forEach(c -> updateState(c.getUID(), UnDefType.UNDEF));

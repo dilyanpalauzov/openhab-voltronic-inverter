@@ -61,6 +61,7 @@ Patches, adding new channels or converting a read-only channel to write-channel 
 | refreshInterval | integer | Interval the device is polled in millisec.  | 750     | no       |
 
 Example configuration file
+
 ```
 Thing voltronic:inverter:f [port="/dev/hidraw0", refreshInterval="2000"]
 ```
@@ -302,6 +303,7 @@ sitemap i1 label="i1" {
   }
 } 
 ```
+
 ![How the sitemap looks like](doc/sitemap.png)
 
 Output source priority and Charger source priority values can be set from the sitemap:
@@ -310,6 +312,7 @@ Output source priority and Charger source priority values can be set from the si
 ## Actions
 
 The `voltronicSend()` action sends a command to the inverter and returns the answer.  It returns `null` if there is a timeout (disconnected cable); or empty string, if the device answers but the CRC does not match.  Otherwise it delivers what the inverter answered.
+
 ```
 val voltronicActions = getActions("voltronic", "voltronic:inverter:f") // second parameter must be thing name
 logError("vi",  voltronicActions.voltronicSend("QPIRI"))

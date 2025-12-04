@@ -1,6 +1,9 @@
 package org.openhab.binding.voltronic.internal;
-// adapted from https://github.com/synogen/mpp/blob/master/src/main/java/org/mppsolartest/serial/CRCUtil.java
 
+// adapted from https://github.com/synogen/mpp/blob/master/src/main/java/org/mppsolartest/serial/CRCUtil.java
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
+@NonNullByDefault
 class CRCUtil {
     private static final char[] crc_tb = new char[] { '\u0000', 'အ', '⁂', 'っ', '䂄', '傥', '惆', '烧', '脈', '鄩', 'ꅊ', '녫',
             '소', '톭', '\ue1ce', '\uf1ef', 'ሱ', 'Ȑ', '㉳', '≒', '劵', '䊔', '狷', '拖', '錹', '茘', '덻', 'ꍚ', '펽', '쎜',

@@ -43,8 +43,6 @@ class Serial extends Base implements Closeable {
         logger.trace("instantiate 1 {}", port);
         device = id.open(Serial.class.getSimpleName(), 1000); // calls nativeavailable
         logger.trace("instantiate 2 {}", port);
-        if (device == null)
-            logger.trace("IS device null? " + (device == null ? "yes" : "no"));
         try {
             input = device.getInputStream();
             output = device.getOutputStream();
@@ -98,7 +96,7 @@ class Serial extends Base implements Closeable {
             instantiate(portId);
         } catch (NoSuchPortException e) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.COMMUNICATION_ERROR, "No such port " + port);
-            logger.error("No such port, going offline", port);
+            logger.error("No such port {}, going offline", port);
             goOffline();
             return;
         } catch (PortInUseException e) {
