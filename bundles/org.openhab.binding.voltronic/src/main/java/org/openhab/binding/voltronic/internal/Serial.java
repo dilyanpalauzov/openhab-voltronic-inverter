@@ -93,12 +93,13 @@ class Serial extends Base implements Closeable {
             instantiate(portId);
         } catch (PortInUseException e) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.COMMUNICATION_ERROR,
-                    "Port " + port + " is in use");
+                    "@text/status.port-in-use");
             logger.error("Port {} is in use, going offline", port);
             goOffline();
             return;
         } catch (IOException e) {
-            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.COMMUNICATION_ERROR, "IOException, see logs.");
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.COMMUNICATION_ERROR,
+                    "@text/status.ioexception");
             logger.error("IOException going offline on port {}", port, e);
             goOffline();
             return;
