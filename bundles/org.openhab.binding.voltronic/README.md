@@ -37,7 +37,7 @@ Sometimes on supported commands the inverter returns NAK.  When this binding rec
 In fact no openHAB thing can be created for these.
 * All battery equalization stuff
 * Detecting which commands the inverter supports and in turn convert some channels from read-only to read-write.
-Currently the only changes via channels are made by the PD/PE, PCP00, PCP01, POP00 and POP01 commands, as only these are supported by the inverter of the author of this binding.
+Currently the only changes via channels are made by the PD/PE, PCP00, PCP01, POP00, POP01, PSPB0, PSPB1, PRG00 and PRG01 commands, as only these are supported by the inverter of the author of this binding.
 However, as can be seen at the end of the current file, there is an action to send arbitrary commands to the inverter.
 * Discovery of devices
 
@@ -72,7 +72,7 @@ The provided channels are grouped, based on the command which provides data for 
 
 ### Autoupdate is disabled
 
-The current binding has disabled generating a predicted state, when a command changing a setting (PE, PD, POP and PCP) is sent to the inverter over a channel.
+The current binding has disabled generating a predicted state, when a command changing a setting (PE, PD, PRG, POP, PSPB and PCP) is sent to the inverter over a channel.
 After sending the command, the binding queues the current state with the QFLAG and QPIRI commands and updates the channels with the new state.
 If the inverter rejects (ignores, vetoes) the command, the initial state of the item does not change.
 [BasicUI](https://github.com/openhab/openhab-webui/issues/3456) and [openHAB-Android with sitemaps](https://github.com/openhab/openhab-android/issues/3947) in such case show the state, which the user modified to, not the state, returned by the inverter.
@@ -109,8 +109,8 @@ Read-only means that the value may or may not be modifiable on the device or by 
 | qpigs#chargingMode              | String                   | R |                          |
 | qpigs#loadStatus                | Switch                   | R |                          |
 | qpigs#batteryVoltageToSteady    | Switch                   | R |                          |
-| qflag#mute                      | Switch                   | W | Buzzer disabled/enabled  |
-| qflag#overloadBypass            | Switch                   | W | Menu item 18             |
+| qflag#mute                      | Switch                   | W | Menu item 18  Buzzer     |
+| qflag#overloadBypass            | Switch                   | W | Menu item 23             |
 | qflag#powerSaving               | Switch                   | W | Menu item 04             |
 | qflag#lcdReturn                 | Switch                   | W | Menu item 19             |
 | qflag#overloadRestart           | Switch                   | W | Menu item 06             |
@@ -133,7 +133,7 @@ Read-only means that the value may or may not be modifiable on the device or by 
 | qpiri#batteryType               | String                   | R | Menu item 05             |
 | qpiri#maxACChargingCurrent      | Number:ElectricCurrent   | R | Menu item 11             |
 | qpiri#maxChargingCurrent        | Number:ElectricCurrent   | R | Menu item 02             |
-| qpiri#inputVoltageRange         | Switch                   | R | Menu item 03             |
+| qpiri#inputVoltageRange         | Switch                   | W | Menu item 03             |
 | qpiri#outputSourcePriority      | Number:Dimensionless     | W | Menu item 01             |
 | qpiri#chargerSourcePriority     | Number:Dimensionless     | W | Menu item 16             |
 | qpiri#parallelMaxNum            | Number:Dimensionless     | R |                          |
@@ -142,7 +142,7 @@ Read-only means that the value may or may not be modifiable on the device or by 
 | qpiri#outputMode                | String                   | R | Menu item 28             |
 | qpiri#batteryRedischargeVoltage | Number:ElectricPotential | R | Menu item 13             |
 | qpiri#pvConditionForParallel    | Switch                   | R |                          |
-| qpiri#pvPowerBalance            | Switch                   | R | Menu item 31             |
+| qpiri#pvPowerBalance            | Switch                   | W | Menu item 31             |
 
 ## Full Example
 
@@ -219,7 +219,7 @@ Number:ElectricPotential BatteryFloatVoltage (gBattery1) [Setpoint, Voltage] { c
 String BatteryType <none> (gBattery1) [Setpoint, Mode] { channel="voltronic:inverter:f:qpiri#batteryType" }
 Number:ElectricCurrent MaxACChargingCurrent (gInverter1) [Setpoint, Current] { channel="voltronic:inverter:f:qpiri#maxACChargingCurrent" }
 Number:ElectricCurrent MaxChargingCurrent (gInverter1) [Setpoint, Current] { channel="voltronic:inverter:f:qpiri#maxChargingCurrent" }
-Switch InputVoltageRange <none> (gInverter1) ["Switch", Mode] { channel="voltronic:inverter:f:qpiri#inputVoltageRange" }
+Switch InputVoltageRange <none> (gInverter1) ["Switch", Mode] { channel="voltronic:inverter:f:qpiri#inputVoltageRange", autoupdate="true" }
 Number:Dimensionless OutputSourcePriority <none> (gInverter1) [Setpoint, Mode] { channel="voltronic:inverter:f:qpiri#outputSourcePriority" }
 Number:Dimensionless ChargerSourcePriority <none> (gInverter1) [Setpoint, Mode] { channel="voltronic:inverter:f:qpiri#chargerSourcePriority" }
 Number:Dimensionless ParallelMaxNum (gInverter1) [Status, Mode] { channel="voltronic:inverter:f:qpiri#parallelMaxNum" }
@@ -228,7 +228,7 @@ Switch Topology <none> (gInverter1) [Status, Mode] { channel="voltronic:inverter
 String OutputMode <none> (gInverter1) [Setpoint, Mode] { channel="voltronic:inverter:f:qpiri#outputMode" }
 Number:ElectricPotential BatteryRedischargeVoltage (gBattery1) [Setpoint, Voltage] { channel="voltronic:inverter:f:qpiri#batteryRedischargeVoltage" }
 Switch PVConditionForParallel <none> (gInverter1) ["Switch", Mode] { channel="voltronic:inverter:f:qpiri#pvConditionForParallel" }
-Switch PVPowerBalance <none> (gInverter1) ["Switch", Mode] { channel="voltronic:inverter:f:qpiri#pvPowerBalance" }
+Switch PVPowerBalance <none> (gInverter1) ["Switch", Mode] { channel="voltronic:inverter:f:qpiri#pvPowerBalance", autoupdate="true" }
 ```
 
 ### Sitemap Configuration
@@ -290,7 +290,7 @@ sitemap i1 label="i1" {
     Text item=BatteryType
     Text item=MaxACChargingCurrent
     Text item=MaxChargingCurrent
-    Text item=InputVoltageRange
+    Selection item=InputVoltageRange
     Selection item=OutputSourcePriority
     Selection item=ChargerSourcePriority
     Text item=ParallelMaxNum
@@ -299,7 +299,7 @@ sitemap i1 label="i1" {
     Text item=OutputMode
     Text item=BatteryRedischargeVoltage
     Text item=PVConditionForParallel
-    Text item=PVPowerBalance 
+    Selection item=PVPowerBalance
   }
 } 
 ```
@@ -317,3 +317,5 @@ The `voltronicSend()` action sends a command to the inverter and returns the ans
 val voltronicActions = getActions("voltronic", "voltronic:inverter:f") // second parameter must be thing name
 logError("vi",  voltronicActions.voltronicSend("QPIRI"))
 ```
+
+Sending a command, not supported by the inverter, might lead to the inverter not responding, which is the same as timeout.  Timeout means that the inverter is disconnected and will go offline.  When the next polling command works, the inverter will go back online.

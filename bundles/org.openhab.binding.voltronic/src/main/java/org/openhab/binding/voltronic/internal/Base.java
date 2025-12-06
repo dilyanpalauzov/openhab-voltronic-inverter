@@ -206,25 +206,39 @@ abstract class Base extends BaseThingHandler implements Runnable {
                     logger.error("Channel {} receives only ON/OFF commands", channelUID.getId());
                     return;
                 case "qpiri":
-                    if (command instanceof Number n) {
-                        switch (channelUID.getIdWithoutGroup()) {
-                            case "chargerSourcePriority":
+                    switch (channelUID.getIdWithoutGroup()) {
+                        case "inputVoltageRange":
+                            if (command instanceof OnOffType o) {
+                                sendCommand("PGR0" + (o == OnOffType.ON ? "1" : "0"));
+                                handleQPIRIandQFLAG();
+                            } else
+                                logger.error("Channel qpiri#inputVoltageRange handles only ON/OFF command");
+                            return;
+                        case "chargerSourcePriority":
+                            if (command instanceof Number n) {
                                 sendCommand("PCP0" + n.toString());
                                 handleQPIRIandQFLAG();
-                                return;
-                            case "outputSourcePriority":
+                            } else
+                                logger.error("Channel qpiri#chargerSourcePriority does not handle non-number commands");
+                            return;
+                        case "outputSourcePriority":
+                            if (command instanceof Number n) {
                                 sendCommand("POP0" + n.toString());
                                 handleQPIRIandQFLAG();
-                                return;
-                            default:
-                                logger.error("Channel {} does not handle commands", channelUID.getId());
-                                return;
-                        }
+                            } else
+                                logger.error("Channel qpiri#outputSourcePriority does not handle non-number commands");
+                            return;
+                        case "pvPowerBalance":
+                            if (command instanceof OnOffType o) {
+                                sendCommand("PSPB" + (o == OnOffType.ON ? "1" : "0"));
+                                handleQPIRIandQFLAG();
+                            } else
+                                logger.error("Channel qpiri#pvPowerBalance handles only ON and OFF");
+                            return;
+                        default:
+                            logger.error("Channel {} does not handle commands", channelUID.getId());
+                            return;
                     }
-                    logger.error("Command {} to channel {} not a Number", command, channelUID.getId());
-                    return;
-                default:
-                    logger.error("Command requested for unsupported channel {}", channelUID.getId());
             }
         } catch (TimeoutException e) {
         }

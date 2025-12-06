@@ -311,12 +311,12 @@
 	<channel-type id="inputVoltageRange">
 		<item-type>Switch</item-type>
 		<label>Input Voltage Range</label>
-		<description><![CDATA[Menu <em>03</em>]]></description>
+		<description><![CDATA[Device grid working range (Menu <em>03</em>)]]></description>
 		<tags>
 			<tag>Switch</tag>
 			<tag>Mode</tag>
 		</tags>
-		<state readOnly="true" pattern="%s">
+		<state pattern="%s">
 			<options>
 				<option value="OFF">Appliance 90-290 Vac</option>
 				<option value="ON">UPS 170-280 Vac</option>
@@ -342,7 +342,7 @@
 	<channel-type id="chargerSourcePriority">
 		<item-type>Number:Dimensionless</item-type>
 		<label>Charger Source Priority</label>
-		<description><![CDATA[Menu <em>16</em>]]></description>
+		<description><![CDATA[Applies only in Bypass, Stand By and Fault mode.  If the mode is Battery or Power Saving, only the sun loads the battery. (Menu <em>16</em>)]]></description>
 		<tags>
 			<tag>Setpoint</tag>
 			<tag>Mode</tag>
@@ -429,12 +429,14 @@
 	<channel-type id="pvPowerBalance">
 		<item-type>Switch</item-type>
 		<label>PV Power Balance</label>
-		<description><![CDATA[Menu <em>31</em>]]></description>
+		<description><![CDATA[Whether
+			the maximum power from PV will be limited by the Maximum charging current from PV and grid from menu 02, irrespective of
+			connected load; or cover the load and the Maximum charging current (Menu <em>31</em>)]]></description>
 		<tags>
 			<tag>Switch</tag>
 			<tag>Mode</tag>
 		</tags>
-		<state readOnly="true" pattern="%s">
+		<state pattern="%s">
 			<options>
 				<option value="OFF">PV input max current will be the max charged current</option>
 				<option value="ON">PV input max power will be the sum of the max charged power and loads power</option>
