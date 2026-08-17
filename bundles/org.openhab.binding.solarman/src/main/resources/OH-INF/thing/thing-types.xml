@@ -25,7 +25,7 @@
 			</parameter>
 			<parameter name="inverterType" type="text" required="true">
 				<label>Inverter Type</label>
-				<description>The type of inverter connected to the logger (default deye_sg04lp3).</description>
+				<description>The type of inverter connected to the logger.</description>
 				<advanced>false</advanced>
 				<options>
 					<option value="deye_2mppt">DEYE Microinverter with 2 MPPT Trackers (deye_2mppt)</option>
