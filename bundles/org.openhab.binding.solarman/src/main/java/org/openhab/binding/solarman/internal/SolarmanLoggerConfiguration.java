@@ -29,7 +29,7 @@ public class SolarmanLoggerConfiguration {
     public String hostname = "";
     public Integer port = 8899;
     public String serialNumber = "";
-    public String inverterType = "sg04lp3";
+    public String inverterType = "";
     public int refreshInterval = 30;
     public String solarmanLoggerMode = SolarmanLoggerMode.V5MODBUS.toString();
     @Nullable
