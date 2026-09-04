@@ -129,7 +129,7 @@ public class SolarmanLoggerHandler extends BaseThingHandler {
                 .scheduleWithFixedDelay(
                         () -> queryLoggerAndUpdateState(solarmanLoggerConnector, solarmanProtocol, mergedRequests,
                                 paramToChannelMapping, solarmanChannelUpdater),
-                        0, config.refreshInterval, TimeUnit.SECONDS);
+                        0, config.refreshInterval, TimeUnit.MILLISECONDS);
     }
 
     private void queryLoggerAndUpdateState(SolarmanLoggerConnector solarmanLoggerConnector,

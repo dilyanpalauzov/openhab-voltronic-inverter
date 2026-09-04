@@ -31,7 +31,7 @@ The IP address can be obtained from your router and the serial number can either
 | serialNumber       | text    | Serial number of the Solarman logger                                                                              | N/A       | yes      | no       |
 | inverterType       | text    | The type of inverter connected to the logger                                                                      | N/A       | yes      | no       |
 | port               | integer | Port of the Solarman logger                                                                                       | 8899      | no       | yes      |
-| refreshInterval    | integer | Interval the device is polled in sec.                                                                             | 60        | no       | yes      |
+| refreshInterval    | integer | Interval the device is polled in millisec.                                                                        | 60000     | no       | yes      |
 | solarmanLoggerMode | option  | RAW Modbus for LAN Stick LSE-3 and V5 MODBUS for most Wifi Sticks. If your Wifi stick uses Raw Modbus choose RAW. | V5 MODBUS | no       | yes      |
 | additionalRequests | text    | Additional requests besides the ones in the definition                                                            | N/A       | no       | yes      |
 
