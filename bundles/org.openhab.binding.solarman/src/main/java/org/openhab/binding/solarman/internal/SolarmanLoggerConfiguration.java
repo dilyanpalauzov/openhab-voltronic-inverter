@@ -30,7 +30,7 @@ public class SolarmanLoggerConfiguration {
     public Integer port = 8899;
     public String serialNumber = "";
     public String inverterType = "";
-    public int refreshInterval = 30;
+    public int refreshInterval = 60000;
     public String solarmanLoggerMode = SolarmanLoggerMode.V5MODBUS.toString();
     @Nullable
     public String additionalRequests;
