@@ -125,11 +125,10 @@ public class SolarmanLoggerHandler extends BaseThingHandler {
                 solarmanProtocol);
         SolarmanChannelUpdater solarmanChannelUpdater = new SolarmanChannelUpdater(this::updateState);
 
-        scheduledFuture = scheduler
-                .scheduleWithFixedDelay(
-                        () -> queryLoggerAndUpdateState(solarmanLoggerConnector, solarmanProtocol, mergedRequests,
-                                paramToChannelMapping, solarmanChannelUpdater),
-                        0, config.refreshInterval, TimeUnit.MILLISECONDS);
+        scheduledFuture = scheduler.scheduleWithFixedDelay(
+                () -> queryLoggerAndUpdateState(solarmanLoggerConnector, solarmanProtocol, mergedRequests,
+                        paramToChannelMapping, solarmanChannelUpdater),
+                0, config.refreshInterval, TimeUnit.MILLISECONDS);
     }
 
     private void queryLoggerAndUpdateState(SolarmanLoggerConnector solarmanLoggerConnector,
