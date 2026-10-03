@@ -118,6 +118,7 @@ Import-Package: \
 -noimportjava: true
 -sources: false
 -contract: *
+-removeheaders: Private-Package
 -includeresource: ${bnd.includeresource}
 -fixupmessages: \
   'Unused Import-Package instructions';is:=ignore,\
