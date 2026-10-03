@@ -55,7 +55,7 @@
 			</parameter>
 			<parameter name="refreshInterval" type="integer" required="false" unit="ms" min="200">
 				<label>Refresh Interval</label>
-				<description>Interval to query the logger (default 60s).</description>
+				<description>Interval to query the logger (default 60000).</description>
 				<default>60000</default>
 				<advanced>true</advanced>
 			</parameter>
