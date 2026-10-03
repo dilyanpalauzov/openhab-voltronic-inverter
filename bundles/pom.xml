@@ -602,6 +602,7 @@
           <configuration>
             <archive>
               <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+              <addMavenDescriptor>false</addMavenDescriptor>
             </archive>
             <skipIfEmpty>true</skipIfEmpty>
           </configuration>
