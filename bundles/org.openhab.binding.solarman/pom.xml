@@ -13,5 +13,10 @@
   <artifactId>org.openhab.binding.solarman</artifactId>
 
   <name>openHAB Add-ons :: Bundles :: Solarman Binding</name>
-
+  <properties>
+    <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
+  </properties>
+  <build>
+    <finalName>${project.artifactId}-5.2.2.${maven.build.timestamp}</finalName>
+  </build>
 </project>
